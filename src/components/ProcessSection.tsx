@@ -1,136 +1,197 @@
 "use client";
 
-import { motion, useScroll, useSpring, useTransform } from "framer-motion";
+import { motion, useScroll, useTransform, useSpring } from "framer-motion";
 import { useRef } from "react";
-import ScrollReveal from "./ScrollReveal";
+import TiltCard from "./TiltCard";
+import { Play, ArrowRight, Layers } from "lucide-react";
 
 const phases = [
     {
         id: "01",
         title: "The Vision",
         subtitle: "Aesthetic Foundations",
-        description: "Master the fundamentals of art theory, color composition, and artistic vision. Before a single polygon is placed, the vision must be clear.",
-        color: "from-blue-500/20 to-transparent",
+        description: "Master art theory & composition.",
+        color: "from-blue-500 to-cyan-500",
+        tech: "CONCEPT ART",
     },
     {
         id: "02",
         title: "The Logic",
         subtitle: "Technical Execution",
-        description: "Translate art into code. Learn the mathematics of game design, optimization, and the technical constraints of modern engines.",
-        color: "from-purple-500/20 to-transparent",
+        description: "Math, optimization & engine constraints.",
+        color: "from-purple-500 to-pink-500",
+        tech: "GAME DEV",
     },
     {
         id: "03",
         title: "The Soul",
         subtitle: "Movement & Life",
-        description: "Breathe life into static assets. Advanced animation, rigging, and particle systems that create an immersive player experience.",
-        color: "from-emerald-500/20 to-transparent",
+        description: "Advanced animation & rigging.",
+        color: "from-emerald-500 to-teal-500",
+        tech: "ANIMATION",
     },
     {
         id: "04",
         title: "Production",
         subtitle: "Industry Ready",
-        description: "Finalize your projects through a real-world production pipeline. Packaging, debugging, and portfolio presentation for major studios.",
-        color: "from-primary/20 to-transparent",
+        description: "Pipelines, debugging & shipping.",
+        color: "from-primary to-orange-500",
+        tech: "PUBLISHING",
     },
 ];
 
 export default function ProcessSection() {
-    const containerRef = useRef(null);
+    const sectionRef = useRef<HTMLDivElement>(null);
     const { scrollYProgress } = useScroll({
-        target: containerRef,
-        offset: ["start center", "end center"]
+        target: sectionRef,
+        offset: ["start start", "end end"]
     });
 
-    const scaleY = useSpring(scrollYProgress, {
+    const smoothProgress = useSpring(scrollYProgress, {
         stiffness: 100,
-        damping: 30,
+        damping: 20,
         restDelta: 0.001
     });
 
     return (
-        <section ref={containerRef} className="py-24 bg-background relative overflow-hidden">
-            {/* Background Accents */}
-            <div className="absolute top-0 right-0 w-1/3 h-full bg-gradient-to-l from-primary/5 to-transparent pointer-events-none" />
+        <section ref={sectionRef} className="relative h-[300vh] bg-background">
+            <div className="sticky top-0 h-screen w-full flex flex-col items-center overflow-hidden bg-grid-white/[0.02]">
 
-            <div className="container mx-auto px-6">
-                <div className="grid lg:grid-cols-2 gap-20">
-                    <div className="sticky top-24 h-fit">
-                        <ScrollReveal direction="left" distance={50}>
-                            <span className="font-handwritten text-4xl text-primary block mb-6">Our Methodology</span>
-                            <h2 className="font-robot text-6xl md:text-8xl font-black uppercase tracking-tighter text-foreground mb-8 leading-none">
-                                THE PATH TO <br /> <span className="text-outline-theme text-transparent">MASTERY</span>
-                            </h2>
-                            <p className="font-inter text-xl text-foreground/50 max-w-lg mb-12 leading-relaxed">
-                                We don't just teach tools. We build creators. Our structured 4-phase journey ensures you graduate with industry-level technical depth and artistic maturity.
-                            </p>
+                {/* Ambient Glow - Centered in background */}
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-primary/20 blur-[100px] rounded-full opacity-50 pointer-events-none" />
 
-                            <div className="flex items-center gap-6">
-                                <div className="relative w-12 h-1 bg-primary/10 rounded-full overflow-hidden">
-                                    <motion.div
-                                        className="absolute inset-0 bg-primary"
-                                        style={{ scaleX: scrollYProgress, transformOrigin: "left" }}
-                                    />
-                                </div>
-                                <span className="font-robot text-[10px] uppercase tracking-widest text-primary font-bold">Progress Tracking Live</span>
-                            </div>
-                        </ScrollReveal>
+                {/* Header Information - Flex Item */}
+                <div className="pt-12 md:pt-20 pb-4 text-center z-10 w-full px-4 shrink-0 pointer-events-none">
+                    <span className="font-robot text-[10px] uppercase tracking-[0.3em] text-primary mb-2 block font-bold">
+                        Process Algorithm
+                    </span>
+                    <h2 className="font-robot text-3xl md:text-5xl font-black uppercase tracking-tight text-white/90">
+                        The Master Stack
+                    </h2>
+                </div>
+
+                {/* Card Stack Container - Flex Item (Grow) covers remaining space */}
+                <div className="relative w-full flex-grow flex items-center justify-center perspective-[1000px] min-h-0">
+
+                    {/* Indicators behind cards */}
+                    <div className="absolute inset-x-8 top-1/2 -translate-y-1/2 flex justify-between pointer-events-none opacity-20 hidden md:flex">
+                        <div className="text-left">
+                            <ArrowRight className="rotate-180 mb-2 w-8 h-8 text-white" />
+                            <span className="font-robot text-[10px] uppercase tracking-widest text-white display-block">Prev Phase</span>
+                        </div>
+                        <div className="text-right">
+                            <ArrowRight className="mb-2 w-8 h-8 text-white ml-auto" />
+                            <span className="font-robot text-[10px] uppercase tracking-widest text-white display-block">Next Phase</span>
+                        </div>
                     </div>
 
-                    <div className="relative pl-12 md:pl-20">
-                        {/* Vertical Progress Line */}
-                        <div className="absolute left-0 top-0 bottom-0 w-1 bg-foreground/5 rounded-full overflow-hidden">
-                            <motion.div
-                                className="absolute top-0 left-0 right-0 bg-gradient-to-b from-primary via-primary/50 to-primary origin-top"
-                                style={{ scaleY }}
-                            />
-                        </div>
+                    {phases.map((phase, index) => (
+                        <ShufflingCard
+                            key={index}
+                            phase={phase}
+                            index={index}
+                            total={phases.length}
+                            progress={smoothProgress}
+                        />
+                    ))}
+                </div>
 
-                        <div className="space-y-20">
-                            {phases.map((phase, index) => (
-                                <ScrollReveal
-                                    key={index}
-                                    direction="up"
-                                    distance={80}
-                                    rotateX={15}
-                                    className="relative"
-                                >
-                                    <div className={`absolute -inset-8 bg-gradient-to-br ${phase.color} rounded-[40px] blur-2xl opacity-50`} />
-
-                                    {/* Watermark Number */}
-                                    <div className="absolute -top-10 -right-4 font-robot text-[12rem] font-black text-foreground/[0.03] leading-none select-none pointer-events-none">
-                                        {phase.id}
-                                    </div>
-
-                                    <div className="relative glass border border-white/5 p-10 rounded-[40px] hover:border-primary/30 transition-all duration-500 group">
-                                        <div className="flex justify-between items-start mb-10">
-                                            <div className="w-16 h-16 bg-primary rounded-2xl flex items-center justify-center font-robot text-3xl font-black text-white transform -rotate-12 group-hover:rotate-0 transition-transform">
-                                                {phase.id}
-                                            </div>
-                                            <span className="font-robot text-[10px] uppercase tracking-[0.4em] text-foreground/30 font-bold">
-                                                PHASE {phase.id}
-                                            </span>
-                                        </div>
-
-                                        <h3 className="font-robot text-4xl font-black uppercase text-foreground mb-2 group-hover:text-primary transition-colors text-glow">
-                                            {phase.title}
-                                        </h3>
-                                        <h4 className="font-handwritten text-2xl text-primary mb-4">
-                                            {phase.subtitle}
-                                        </h4>
-                                        <p className="font-inter text-lg text-foreground/60 leading-relaxed group-hover:text-foreground/80 transition-colors">
-                                            {phase.description}
-                                        </p>
-
-                                        {/* Connector Dot */}
-                                        <div className="absolute left-[-52px] md:left-[-84px] top-1/2 -translate-y-1/2 w-4 h-4 bg-background border-4 border-primary/20 rounded-full z-10 group-hover:border-primary group-hover:scale-125 transition-all" />
-                                    </div>
-                                </ScrollReveal>
-                            ))}
-                        </div>
+                {/* Progress Bar - Flex Item (Bottom) */}
+                <div className="pb-12 w-full max-w-md px-6 shrink-0 z-20">
+                    <div className="flex justify-between text-[10px] uppercase font-robot tracking-widest text-white/40 mb-2">
+                        <span>Initialization</span>
+                        <span>Completion</span>
+                    </div>
+                    <div className="h-1 bg-white/10 rounded-full overflow-hidden">
+                        <motion.div
+                            className="h-full bg-primary"
+                            style={{ scaleX: smoothProgress, transformOrigin: "left" }}
+                        />
                     </div>
                 </div>
             </div>
         </section>
+    );
+}
+
+function ShufflingCard({ phase, index, total, progress }: { phase: any, index: number, total: number, progress: any }) {
+    const step = 1 / total;
+    const start = index * step;
+    const end = (index + 1) * step;
+
+    // Normalized progress for "exit phase"
+    const exitProgress = useTransform(progress, [start, end], [0, 1]);
+
+    // Alternate directions
+    const xDir = index % 2 === 0 ? -1 : 1;
+    const rotationDir = index % 2 === 0 ? -15 : 15;
+
+    // Slide Out Motion
+    const x = useTransform(exitProgress, [0, 1], ["0%", `${xDir * 150}%`]);
+    const rotate = useTransform(exitProgress, [0, 1], [0, rotationDir]);
+    const opacity = useTransform(exitProgress, [0, 0.8, 1], [1, 1, 0]);
+
+    // Z-Index Stacking
+    const zIndex = total - index;
+
+    // Entry / Behind Logic (Next card zooming in)
+    const enterProgress = useTransform(progress, [start - step, start], [0, 1]);
+    const scale = useTransform(enterProgress, [0, 1], [0.95, 1]);
+    const brightness = useTransform(enterProgress, [0, 1], [0.5, 1]);
+
+    return (
+        <motion.div
+            style={{
+                zIndex,
+                x,
+                rotate,
+                scale,
+                opacity: index === 0 ? opacity : useTransform(progress, [start - step, start], [0, 1]), // Cards appear as they approach their turn
+                filter: useTransform(brightness, b => `brightness(${b})`),
+            }}
+            className="absolute max-h-[60vh] h-auto aspect-[3/4] md:aspect-[4/5] w-[85vw] md:w-auto md:h-[450px] will-change-transform"
+        >
+            <TiltCard className="w-full h-full relative group">
+                <div className="relative h-full w-full bg-[#0F0F11] border border-white/10 rounded-[32px] overflow-hidden flex flex-col p-6 md:p-8 shadow-2xl transition-colors hover:border-primary/50">
+
+                    {/* Header */}
+                    <div className="flex justify-between items-center mb-auto md:mb-10">
+                        <div className="flex items-center gap-2">
+                            <Layers size={14} className="text-primary" />
+                            <span className="font-robot text-[10px] uppercase tracking-widest text-white/60 font-bold">
+                                Layer {phase.id}
+                            </span>
+                        </div>
+                        <span className="font-robot text-[9px] uppercase tracking-[0.2em] px-2 py-1 bg-white/5 rounded text-white/30">
+                            {phase.tech}
+                        </span>
+                    </div>
+
+                    {/* Content */}
+                    <div className="mt-8 md:mt-auto">
+                        <div className={`w-16 h-1 bg-gradient-to-r ${phase.color} mb-6 rounded-full`} />
+
+                        <h3 className="font-robot text-3xl md:text-5xl font-black uppercase tracking-tighter text-white mb-4 leading-[0.9]">
+                            {phase.title}
+                        </h3>
+                        <h4 className="font-handwritten text-lg md:text-xl text-white/60 mb-6 md:mb-8">
+                            {phase.subtitle}
+                        </h4>
+
+                        <div className="border-t border-white/5 pt-6 flex justify-between items-end">
+                            <p className="font-inter text-xs text-white/40 leading-relaxed max-w-[200px]">
+                                {phase.description}
+                            </p>
+                            <div className="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all shrink-0 ml-4">
+                                <Play size={14} fill="currentColor" />
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Decor */}
+                    <div className={`absolute top-0 right-0 w-64 h-64 bg-gradient-to-br ${phase.color} opacity-[0.03] rounded-full blur-3xl -mr-20 -mt-20 pointer-events-none`} />
+                </div>
+            </TiltCard>
+        </motion.div>
     );
 }
