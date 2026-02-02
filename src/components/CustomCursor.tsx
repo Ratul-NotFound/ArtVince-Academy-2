@@ -51,16 +51,52 @@ export default function CustomCursor() {
     }, [cursorX, cursorY]);
 
     return (
-        <motion.div
-            className="fixed top-0 left-0 w-8 h-8 rounded-full border-2 border-primary z-[9999] pointer-events-none mix-blend-difference hidden md:block"
-            style={{
-                translateX: cursorXSpring,
-                translateY: cursorYSpring,
-            }}
-            animate={{
-                scale: hovered ? 1.5 : clicked ? 0.8 : 1,
-                backgroundColor: hovered ? "rgba(0, 112, 243, 0.3)" : "transparent",
-            }}
-        />
+        <>
+            {/* Primary Dot (Instant) */}
+            <motion.div
+                className="fixed top-0 left-0 w-2 h-2 bg-primary rounded-full z-[10000] pointer-events-none mix-blend-difference hidden md:block"
+                style={{
+                    x: cursorXSpring,
+                    y: cursorYSpring,
+                    left: 12, // Offset to center on 32px frame, though we moved it in moveCursor
+                }}
+            />
+
+            {/* Trailing Geometric Aura */}
+            <motion.div
+                className="fixed top-0 left-0 w-10 h-10 border-2 border-primary/50 z-[9999] pointer-events-none hidden md:block"
+                style={{
+                    x: cursorXSpring,
+                    y: cursorYSpring,
+                }}
+                animate={{
+                    scale: hovered ? 1.8 : clicked ? 0.6 : 1,
+                    rotate: hovered ? 135 : 0,
+                    borderRadius: hovered ? "30%" : "50%",
+                    borderWidth: hovered ? "1px" : "2px",
+                    borderColor: hovered ? "rgba(var(--primary-rgb), 1)" : "rgba(var(--primary-rgb), 0.5)",
+                }}
+                transition={{
+                    type: "spring",
+                    stiffness: 150,
+                    damping: 15,
+                    mass: 0.5
+                }}
+            />
+
+            {/* Glowing Pulse on Click */}
+            {clicked && (
+                <motion.div
+                    initial={{ scale: 0.5, opacity: 1 }}
+                    animate={{ scale: 2.5, opacity: 0 }}
+                    transition={{ duration: 0.4 }}
+                    className="fixed top-0 left-0 w-10 h-10 bg-primary/20 rounded-full z-[9998] pointer-events-none hidden md:block"
+                    style={{
+                        x: cursorXSpring,
+                        y: cursorYSpring,
+                    }}
+                />
+            )}
+        </>
     );
 }
