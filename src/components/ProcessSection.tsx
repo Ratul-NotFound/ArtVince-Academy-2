@@ -8,39 +8,39 @@ import { Play, ArrowRight, Layers } from "lucide-react";
 const phases = [
     {
         id: "01",
-        title: "The Vision",
-        subtitle: "Aesthetic Foundations",
-        description: "Master art theory & composition.",
+        title: "Anatomy & Form",
+        subtitle: "Digital Sculpting Foundations",
+        description: "Master organic & hard-surface sculpting in ZBrush. Understand primary shapes & silhouettes.",
         color: "from-blue-500 to-cyan-500",
-        tech: "CONCEPT ART",
-        image: "https://images.unsplash.com/photo-1635805737707-575885ab0820?q=80&w=2070&auto=format&fit=crop", // Movie/Game Character Concept (Spiderman)
+        tech: "SCULPTING",
+        image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?q=80&w=2070&auto=format&fit=crop", // Sculpting
     },
     {
         id: "02",
-        title: "The Logic",
-        subtitle: "Technical Execution",
-        description: "Math, optimization & engine constraints.",
+        title: "Precision Mesh",
+        subtitle: "Technical Retopology",
+        description: "Convert high-poly sculpts into game-ready geometry. Master baking & UV mapping.",
         color: "from-purple-500 to-pink-500",
-        tech: "GAME DEV",
-        image: "https://images.unsplash.com/photo-1614294149010-950b698f72c0?q=80&w=2070&auto=format&fit=crop", // Wireframe/Node Logic
+        tech: "RETOPOLOGY",
+        image: "https://images.unsplash.com/photo-1614294149010-950b698f72c0?q=80&w=2070&auto=format&fit=crop", // Technical Topology
     },
     {
         id: "03",
-        title: "The Soul",
-        subtitle: "Movement & Life",
-        description: "Advanced animation & rigging.",
+        title: "Material Mastery",
+        subtitle: "PBR Texturing Workflow",
+        description: "Bring models to life with Substance Painter. Master photorealistic metal & skin shaders.",
         color: "from-emerald-500 to-teal-500",
-        tech: "ANIMATION",
-        image: "https://images.unsplash.com/photo-1612151855475-877969f432cc?q=80&w=2070&auto=format&fit=crop", // Gaming Controller / Neon Vibes (Input/Movement)
+        tech: "PBR TEXTURING",
+        image: "https://images.unsplash.com/photo-1633545505416-86d382d68961?q=80&w=2070&auto=format&fit=crop", // Material Detail
     },
     {
         id: "04",
-        title: "Production",
-        subtitle: "Industry Ready",
-        description: "Pipelines, debugging & shipping.",
+        title: "Cinematic State",
+        subtitle: "Lighting & Composition",
+        description: "Final presentation in Unreal Engine 5. Master cinematic lighting & VFX integration.",
         color: "from-primary to-orange-500",
-        tech: "PUBLISHING",
-        image: "https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=2070&auto=format&fit=crop", // E-Sports / Finished Game Screen
+        tech: "RENDERING",
+        image: "https://images.unsplash.com/photo-1547394765-185e1e68f34e?q=80&w=2070&auto=format&fit=crop", // UE5 Rendering
     },
 ];
 
@@ -69,10 +69,10 @@ export default function ProcessSection() {
                 {/* Header Information - Flex Item */}
                 <div className="pt-12 md:pt-20 pb-4 text-center z-10 w-full px-4 shrink-0 pointer-events-none" suppressHydrationWarning>
                     <span className="font-robot text-[10px] uppercase tracking-[0.3em] text-primary mb-2 block font-bold">
-                        Process Algorithm
+                        Production Pipeline
                     </span>
                     <h2 className="font-robot text-3xl md:text-5xl font-black uppercase tracking-tight text-white/90">
-                        The Master Stack
+                        The 3D Mastery Workflow
                     </h2>
                 </div>
 

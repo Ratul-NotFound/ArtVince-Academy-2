@@ -12,9 +12,9 @@ export default function CoursesPage() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                 >
-                    <span className="font-handwritten text-4xl text-primary block mb-4">Training Ground</span>
+                    <span className="font-handwritten text-4xl text-primary block mb-4">Master Your Craft</span>
                     <h1 className="font-robot text-5xl md:text-8xl font-bold uppercase tracking-tighter text-foreground">
-                        Deployment <span className="text-outline-theme text-transparent">Catalogue</span>
+                        3D Art <span className="text-outline-theme text-transparent">Catalogue</span>
                     </h1>
                 </motion.div>
             </div>

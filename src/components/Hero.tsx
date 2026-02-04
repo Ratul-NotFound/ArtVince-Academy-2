@@ -7,11 +7,11 @@ import Image from "next/image";
 
 // Hero background images - curated for 3D art & gaming industry
 const heroImages = [
-    "https://images.unsplash.com/photo-1552820728-8b83bb6b2b0f?q=80&w=2070&auto=format&fit=crop", // Gaming atmosphere
-    "https://images.unsplash.com/photo-1612287230202-1ff1d85d1bdf?q=80&w=2071&auto=format&fit=crop", // VR headset gaming
-    "https://images.unsplash.com/photo-1538481199705-c710c4e965fc?q=80&w=2065&auto=format&fit=crop", // Esports gaming
-    "https://images.unsplash.com/photo-1593305841991-05c297ba4575?q=80&w=2074&auto=format&fit=crop", // Gaming controller
-    "https://images.unsplash.com/photo-1560419015-7c427e8ae5ba?q=80&w=2070&auto=format&fit=crop", // Gaming setup RGB
+    "https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?q=80&w=2070&auto=format&fit=crop", // AAA Character Sculpting
+    "https://images.unsplash.com/photo-1614294149010-950b698f72c0?q=80&w=2070&auto=format&fit=crop", // Technical Topology
+    "https://images.unsplash.com/photo-1547394765-185e1e68f34e?q=80&w=2070&auto=format&fit=crop", // Unreal Engine Environment
+    "https://images.unsplash.com/photo-1509248961158-e54f6934749c?q=80&w=2074&auto=format&fit=crop", // Hollywood Cinematic Rendering
+    "https://images.unsplash.com/photo-1635805737707-575885ab0820?q=80&w=2070&auto=format&fit=crop", // Character Render (Spider-Man Style)
 ];
 
 export default function Hero() {
@@ -120,7 +120,7 @@ export default function Hero() {
                                 src={heroImages[currentImageIndex]}
                                 alt="Hero Background"
                                 fill
-                                className="object-cover object-center grayscale mix-blend-overlay"
+                                className="object-cover object-center mix-blend-overlay"
                                 priority
                             />
                         </motion.div>
@@ -152,7 +152,7 @@ export default function Hero() {
                         className="transform-gpu"
                     >
                         <span className="font-handwritten text-5xl text-primary mb-6 block animate-pulse drop-shadow-[0_0_15px_rgba(var(--primary-rgb),0.5)]">
-                            Master the Art of Play
+                            Master the Art of 3D Creation
                         </span>
                         <h1 className="font-robot text-6xl md:text-9xl font-bold uppercase tracking-tighter leading-none mb-6">
                             <span className="block overflow-hidden">
