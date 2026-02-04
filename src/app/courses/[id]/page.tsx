@@ -1,165 +1,261 @@
 "use client";
 
-import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
+import { useParams, useRouter } from "next/navigation";
 import { db } from "@/lib/firebase";
-import { doc, getDoc, collection, addDoc, query, where, getDocs } from "firebase/firestore";
+import { doc, getDoc } from "firebase/firestore";
+import { Course } from "@/types";
 import { useAuth } from "@/context/AuthContext";
-import { motion } from "framer-motion";
-import { Play, CheckCircle, Clock, BarChart, ShieldCheck } from "lucide-react";
+import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import EnrollmentModal from "@/components/EnrollmentModal";
+import {
+    Clock,
+    BarChart,
+    Users,
+    CheckCircle2,
+    Play,
+    ArrowRight,
+    Loader2,
+    ShieldCheck,
+    Zap,
+    BookOpen
+} from "lucide-react";
+import { motion } from "framer-motion";
 
-interface Course {
-    id: string;
-    title: string;
-    category: string;
-    price: string;
-    image: string;
-    description?: string;
-}
-
-export default function CourseDetailPage() {
+export default function CourseDetailsPage() {
     const { id } = useParams();
-    const { user } = useAuth();
+    const router = useRouter();
+    const { user, profile } = useAuth();
     const [course, setCourse] = useState<Course | null>(null);
-    const [isEnrolled, setIsEnrolled] = useState(false);
     const [loading, setLoading] = useState(true);
+    const [isEnrollModalOpen, setIsEnrollModalOpen] = useState(false);
 
     useEffect(() => {
         const fetchCourse = async () => {
-            const docRef = doc(db, "courses", id as string);
-            const docSnap = await getDoc(docRef);
-            if (docSnap.exists()) {
-                setCourse({ id: docSnap.id, ...docSnap.data() } as Course);
+            if (!id) return;
+            try {
+                const docSnap = await getDoc(doc(db, "courses", id as string));
+                if (docSnap.exists()) {
+                    setCourse({ id: docSnap.id, ...docSnap.data() } as Course);
+                }
+            } catch (error) {
+                console.error("Error fetching course:", error);
+            } finally {
+                setLoading(false);
             }
-
-            if (user) {
-                const enrollQuery = query(
-                    collection(db, "enrollments"),
-                    where("userId", "==", user.uid),
-                    where("courseId", "==", id)
-                );
-                const enrollSnap = await getDocs(enrollQuery);
-                setIsEnrolled(!enrollSnap.empty);
-            }
-            setLoading(false);
         };
+        fetchCourse();
+    }, [id]);
 
-        if (id) fetchCourse();
-    }, [id, user]);
+    const isEnrolled = profile?.enrolledCourses?.includes(id as string);
 
-    const handleEnroll = async () => {
-        if (!user) {
-            alert("Please login to enroll");
-            return;
-        }
-        await addDoc(collection(db, "enrollments"), {
-            userId: user.uid,
-            courseId: id,
-            enrolledAt: new Date(),
-            progress: 0
-        });
-        setIsEnrolled(true);
-    };
+    if (loading) {
+        return (
+            <div className="h-screen flex items-center justify-center bg-background">
+                <Loader2 className="animate-spin text-primary" size={48} />
+            </div>
+        );
+    }
 
-    if (loading) return <div className="h-screen flex items-center justify-center font-robot uppercase tracking-widest bg-background text-foreground">Initializing Intel...</div>;
-    if (!course) return <div className="h-screen flex items-center justify-center font-robot bg-background text-foreground">Course Not Found</div>;
+    if (!course) {
+        return (
+            <div className="h-screen flex flex-col items-center justify-center bg-background p-6">
+                <h1 className="font-robot text-4xl font-bold uppercase mb-4 text-foreground/20">Data Unavailable</h1>
+                <button onClick={() => router.push("/courses")} className="text-primary font-robot uppercase tracking-widest text-sm underline">Return to Academy</button>
+            </div>
+        );
+    }
 
     return (
-        <div className="bg-background min-h-screen pt-32 text-foreground transition-colors duration-300">
-            <div className="container mx-auto px-6">
-                <div className="grid lg:grid-cols-3 gap-16">
-                    {/* Main Info */}
-                    <div className="lg:col-span-2">
-                        <motion.div
-                            initial={{ opacity: 0, x: -20 }}
-                            animate={{ opacity: 1, x: 0 }}
-                        >
-                            <span className="font-robot text-primary uppercase tracking-[0.3em] text-xs mb-4 block">Deployment Log // {course.category}</span>
-                            <h1 className="font-robot text-5xl md:text-7xl font-bold uppercase tracking-tighter mb-8 leading-tight">
-                                {course.title}
-                            </h1>
-                            <div className="aspect-video rounded-3xl overflow-hidden relative border border-border mb-12">
-                                <img src={course.image} alt="" className="object-cover w-full h-full grayscale hover:grayscale-0 transition-all duration-700" />
-                                <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent flex items-center justify-center">
-                                    <button className="bg-primary p-6 rounded-full hover:scale-110 transition-transform">
-                                        <Play size={32} className="text-white" fill="white" />
-                                    </button>
-                                </div>
-                            </div>
+        <main className="min-h-screen bg-background">
+            <Navbar />
 
-                            <div className="space-y-12">
-                                <div>
-                                    <h3 className="font-robot text-2xl font-bold uppercase mb-6 flex items-center gap-3">
-                                        <ShieldCheck className="text-primary" /> Mission Objectives
-                                    </h3>
-                                    <div className="grid md:grid-cols-2 gap-6">
-                                        {[
-                                            "Master industry-standard AAA workflows",
-                                            "Build production-ready assets from scratch",
-                                            "Personal mentorship from studio veterans",
-                                            "Lifetime access to creative resources"
-                                        ].map((item, i) => (
-                                            <div key={i} className="flex gap-4 p-4 glass rounded-xl border border-border">
-                                                <CheckCircle size={20} className="text-primary shrink-0" />
-                                                <span className="font-inter text-foreground/70 text-sm">{item}</span>
-                                            </div>
-                                        ))}
+            {/* Hero Section */}
+            <section className="relative pt-32 pb-20 overflow-hidden">
+                <div className="absolute inset-0 bg-primary/5 opacity-50 blur-[120px] rounded-full -top-40 -left-40 w-full h-full pointer-events-none" />
+                <div className="container mx-auto px-6 relative z-10">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                        <div className="space-y-8">
+                            <motion.div
+                                initial={{ opacity: 0, x: -20 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20"
+                            >
+                                <Zap size={14} className="text-primary" />
+                                <span className="font-robot text-[10px] uppercase tracking-widest text-primary font-bold">Industry Standard Training</span>
+                            </motion.div>
+
+                            <motion.h1
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                className="font-robot text-5xl md:text-7xl font-black uppercase tracking-tighter text-foreground leading-[0.9]"
+                            >
+                                {course.title}
+                            </motion.h1>
+
+                            <motion.p
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                transition={{ delay: 0.2 }}
+                                className="font-inter text-lg text-foreground/50 max-w-xl leading-relaxed"
+                            >
+                                {course.description}
+                            </motion.p>
+
+                            <motion.div
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 0.3 }}
+                                className="flex flex-wrap gap-6"
+                            >
+                                <div className="flex items-center gap-3">
+                                    <div className="w-10 h-10 rounded-xl bg-foreground/5 flex items-center justify-center text-primary border border-border">
+                                        <Clock size={18} />
+                                    </div>
+                                    <div>
+                                        <p className="font-robot text-[10px] uppercase tracking-widest text-foreground/30">Duration</p>
+                                        <p className="font-robot text-xs font-bold uppercase">{course.duration || "8 Weeks"}</p>
                                     </div>
                                 </div>
+                                <div className="flex items-center gap-3">
+                                    <div className="w-10 h-10 rounded-xl bg-foreground/5 flex items-center justify-center text-primary border border-border">
+                                        <BarChart size={18} />
+                                    </div>
+                                    <div>
+                                        <p className="font-robot text-[10px] uppercase tracking-widest text-foreground/30">Difficulty</p>
+                                        <p className="font-robot text-xs font-bold uppercase">{course.difficulty}</p>
+                                    </div>
+                                </div>
+                                <div className="flex items-center gap-3">
+                                    <div className="w-10 h-10 rounded-xl bg-foreground/5 flex items-center justify-center text-primary border border-border">
+                                        <Users size={18} />
+                                    </div>
+                                    <div>
+                                        <p className="font-robot text-[10px] uppercase tracking-widest text-foreground/30">Enrolled</p>
+                                        <p className="font-robot text-xs font-bold uppercase">{course.enrolledCount} Operatives</p>
+                                    </div>
+                                </div>
+                            </motion.div>
 
-                                <div>
-                                    <h3 className="font-robot text-2xl font-bold uppercase mb-6 text-foreground">Execution Summary</h3>
-                                    <p className="font-inter text-foreground/50 leading-relaxed text-lg">
-                                        {course.description || "This advanced module covers the full creative cycle, from conceptualization to deployment. You will work with industry tools and peer-reviewed pipelines to ensure your skills are sharp and market-ready."}
-                                    </p>
+                            <motion.div
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 0.4 }}
+                                className="pt-6"
+                            >
+                                {isEnrolled ? (
+                                    <button
+                                        onClick={() => router.push(`/dashboard/courses/${course.id}`)}
+                                        className="bg-primary text-white px-10 py-5 rounded-2xl font-robot text-sm uppercase tracking-[0.2em] font-bold shadow-2xl shadow-primary/30 hover:scale-105 transition-all flex items-center gap-3"
+                                    >
+                                        Resume Learning <ArrowRight size={20} />
+                                    </button>
+                                ) : (
+                                    <div className="flex gap-4 items-center">
+                                        <button
+                                            onClick={() => {
+                                                if (!user) {
+                                                    router.push("/login?redirect=" + id);
+                                                } else {
+                                                    setIsEnrollModalOpen(true);
+                                                }
+                                            }}
+                                            className="bg-primary text-white px-10 py-5 rounded-2xl font-robot text-sm uppercase tracking-[0.2em] font-bold shadow-2xl shadow-primary/30 hover:scale-105 transition-all flex items-center gap-3 shrink-0"
+                                        >
+                                            Enroll in Class <ArrowRight size={20} />
+                                        </button>
+                                        <div className="hidden sm:block">
+                                            <p className="font-robot text-3xl font-black text-foreground">${course.price}</p>
+                                            <p className="font-robot text-[10px] uppercase tracking-widest text-foreground/30">Single Payment</p>
+                                        </div>
+                                    </div>
+                                )}
+                            </motion.div>
+                        </div>
+
+                        {/* Thumbnail / Video Preview */}
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.9 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            className="relative aspect-video rounded-3xl overflow-hidden border border-border group"
+                        >
+                            {course.thumbnail ? (
+                                <img src={course.thumbnail} alt={course.title} className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700" />
+                            ) : (
+                                <div className="w-full h-full bg-foreground/5 flex items-center justify-center text-foreground/10">
+                                    <BookOpen size={120} strokeWidth={1} />
+                                </div>
+                            )}
+                            <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                <div className="w-20 h-20 rounded-full bg-primary flex items-center justify-center text-white shadow-2xl animate-pulse">
+                                    <Play size={32} fill="currentColor" />
                                 </div>
                             </div>
                         </motion.div>
                     </div>
+                </div>
+            </section>
 
-                    {/* Pricing / Enrollment Card */}
-                    <div className="lg:col-span-1">
-                        <div className="sticky top-32 glass p-10 rounded-3xl border border-white/10 space-y-8">
-                            <div className="flex justify-between items-end border-b border-border pb-6">
-                                <span className="font-robot text-[10px] uppercase tracking-widest text-foreground/40">Total Access</span>
-                                <span className="font-robot text-4xl font-bold text-foreground">{course.price}</span>
-                            </div>
-
-                            <div className="space-y-4 pt-6 border-t border-white/5">
-                                <div className="flex items-center justify-between text-sm">
-                                    <span className="flex items-center gap-2 text-foreground/40"><Clock size={16} /> Duration</span>
-                                    <span className="font-robot text-foreground">12 Weeks</span>
+            {/* Content Details */}
+            <section className="py-20 border-t border-border bg-foreground/[0.01]">
+                <div className="container mx-auto px-6">
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-16">
+                        <div className="lg:col-span-2 space-y-12">
+                            <div className="space-y-6">
+                                <h3 className="font-robot text-2xl font-bold uppercase tracking-tight">Curriculum Preview</h3>
+                                <div className="space-y-4">
+                                    {[1, 2, 3, 4].map((i) => (
+                                        <div key={i} className="glass p-6 rounded-2xl border border-border flex items-center justify-between group hover:border-primary/50 transition-all">
+                                            <div className="flex items-center gap-4">
+                                                <div className="w-8 h-8 rounded-lg bg-foreground/5 flex items-center justify-center font-robot text-xs text-foreground/40 font-bold group-hover:bg-primary group-hover:text-white transition-all">
+                                                    0{i}
+                                                </div>
+                                                <span className="font-robot text-sm uppercase tracking-widest text-foreground/70 group-hover:text-foreground transition-all">Module {i}: Fundamental Protocol</span>
+                                            </div>
+                                            <div className="flex items-center gap-4 text-foreground/20">
+                                                <span className="font-inter text-xs">Locked</span>
+                                                <ShieldCheck size={16} />
+                                            </div>
+                                        </div>
+                                    ))}
                                 </div>
-                                <div className="flex items-center justify-between text-sm">
-                                    <span className="flex items-center gap-2 text-foreground/40"><BarChart size={16} /> Level</span>
-                                    <span className="font-robot text-foreground">Advanced</span>
-                                </div>
                             </div>
+                        </div>
 
-                            {isEnrolled ? (
-                                <button className="w-full bg-foreground/10 border border-border py-5 rounded-xl font-robot font-bold uppercase tracking-widest text-primary">
-                                    Enrolled
-                                </button>
-                            ) : (
-                                <button
-                                    onClick={handleEnroll}
-                                    className="w-full bg-primary py-5 rounded-xl font-robot font-bold uppercase tracking-widest text-white hover:bg-foreground hover:text-background transition-all transform hover:scale-[1.02]"
-                                >
-                                    Enroll Now
-                                </button>
-                            )}
-
-                            <p className="text-center font-robot text-[10px] uppercase tracking-[0.2em] text-foreground/20">
-                                Secure checkout powered by Artvince
-                            </p>
+                        <div className="space-y-8">
+                            <div className="glass p-8 rounded-3xl border border-border h-full">
+                                <h4 className="font-robot text-lg font-bold uppercase mb-6 flex items-center gap-2">
+                                    <Zap size={18} className="text-primary" /> Included Features
+                                </h4>
+                                <ul className="space-y-4">
+                                    {[
+                                        "Lifetime High-Res Video Access",
+                                        "Downloadable Pipeline Assets",
+                                        "Bi-Weekly Live Mentorship Sessions",
+                                        "Private Academic Discord Access",
+                                        "Official Industry Certification",
+                                        "Portfolio Review by Mentors"
+                                    ].map((feature, i) => (
+                                        <li key={i} className="flex items-start gap-3">
+                                            <CheckCircle2 size={16} className="text-emerald-500 shrink-0 mt-0.5" />
+                                            <span className="font-inter text-sm text-foreground/60">{feature}</span>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div className="mt-32">
-                <Footer />
-            </div>
-        </div>
+            </section>
+
+            <Footer />
+
+            <EnrollmentModal
+                course={course}
+                isOpen={isEnrollModalOpen}
+                onClose={() => setIsEnrollModalOpen(false)}
+            />
+        </main>
     );
 }

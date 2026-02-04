@@ -3,65 +3,62 @@
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 import { useEffect, ReactNode } from "react";
-import Link from "next/link";
-import { LayoutDashboard, BookOpen, Users, Settings, LogOut } from "lucide-react";
+import Sidebar from "./Sidebar";
+import { Menu } from "lucide-react";
 
-export default function DashboardLayout({ children, adminOnly = false }: { children: ReactNode, adminOnly?: boolean }) {
-    const { user, loading, isAdmin, logout } = useAuth();
+export default function DashboardLayout({ children }: { children: ReactNode }) {
+    const { user, loading } = useAuth();
     const router = useRouter();
 
     useEffect(() => {
         if (!loading && !user) {
-            router.push("/");
+            router.push("/login");
         }
-        if (!loading && adminOnly && !isAdmin) {
-            router.push("/dashboard");
-        }
-    }, [user, loading, isAdmin, adminOnly, router]);
+    }, [user, loading, router]);
 
-    if (loading) return <div className="h-screen flex items-center justify-center font-robot uppercase tracking-widest">Loading Artvince...</div>;
+    if (loading) {
+        return (
+            <div className="h-screen flex items-center justify-center bg-background">
+                <div className="flex flex-col items-center gap-4">
+                    <div className="w-12 h-12 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+                    <p className="font-robot text-[10px] uppercase tracking-[0.3em] text-primary animate-pulse">Initializing Interface</p>
+                </div>
+            </div>
+        );
+    }
+
+    if (!user) return null;
 
     return (
-        <div className="flex min-h-screen bg-background pt-24 text-foreground transition-colors duration-300">
-            {/* Sidebar */}
-            <aside className="w-64 border-r border-border p-6 space-y-8 hidden md:block transition-colors duration-300">
-                <div className="space-y-2">
-                    <span className="font-robot text-[10px] uppercase tracking-widest text-foreground/30 px-4">Menu</span>
-                    <nav className="space-y-1">
-                        {[
-                            { name: "Overview", href: "/dashboard", icon: LayoutDashboard },
-                            { name: "My Courses", href: "/dashboard/courses", icon: BookOpen },
-                            ...(isAdmin ? [
-                                { name: "Manage Courses", href: "/admin/courses", icon: BookOpen },
-                                { name: "Manage Users", href: "/admin/users", icon: Users },
-                            ] : []),
-                            { name: "Settings", href: "/dashboard/settings", icon: Settings },
-                        ].map((item) => (
-                            <Link
-                                key={item.href}
-                                href={item.href}
-                                className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-surface font-robot text-sm uppercase tracking-wider transition-all"
-                            >
-                                <item.icon size={18} />
-                                {item.name}
-                            </Link>
-                        ))}
-                    </nav>
-                </div>
+        <div className="flex h-screen bg-background overflow-hidden">
+            {/* Sidebar (Desktop) */}
+            <div className="hidden md:block h-full">
+                <Sidebar />
+            </div>
 
-                <button
-                    onClick={logout}
-                    className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-red-500/10 text-red-500 font-robot text-sm uppercase tracking-wider w-full transition-all"
-                >
-                    <LogOut size={18} />
-                    Logout
-                </button>
-            </aside>
+            {/* Main Content Area */}
+            <div className="flex-1 flex flex-col h-full overflow-hidden relative">
+                {/* Top Header / Mobile Bar */}
+                <header className="h-20 border-b border-border flex items-center justify-between px-8 bg-background/50 backdrop-blur-md z-30 shrink-0">
+                    <div className="flex items-center gap-4">
+                        <button className="md:hidden p-2 hover:bg-foreground/5 rounded-lg text-foreground/50">
+                            <Menu size={20} />
+                        </button>
+                        <h2 className="font-robot text-xs uppercase tracking-[0.3em] text-foreground/30 font-bold hidden sm:block">
+                            Artvince Management System
+                        </h2>
+                    </div>
+                </header>
 
-            {/* Main Content */}
-            <main className="flex-1 p-8">
-                {children}
-            </main>
+                {/* Sub-content Scrollable Area */}
+                <main className="flex-1 overflow-y-auto custom-scrollbar p-6 md:p-10 relative">
+                    {/* Background Subtle Gradient */}
+                    <div className="absolute top-0 left-0 w-full h-96 bg-gradient-to-b from-primary/5 to-transparent pointer-events-none" />
+                    <div className="relative z-10 max-w-7xl mx-auto">
+                        {children}
+                    </div>
+                </main>
+            </div>
         </div>
     );
 }
