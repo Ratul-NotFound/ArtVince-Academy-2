@@ -13,6 +13,7 @@ const phases = [
         description: "Master art theory & composition.",
         color: "from-blue-500 to-cyan-500",
         tech: "CONCEPT ART",
+        image: "https://images.unsplash.com/photo-1635805737707-575885ab0820?q=80&w=2070&auto=format&fit=crop", // Movie/Game Character Concept (Spiderman)
     },
     {
         id: "02",
@@ -21,6 +22,7 @@ const phases = [
         description: "Math, optimization & engine constraints.",
         color: "from-purple-500 to-pink-500",
         tech: "GAME DEV",
+        image: "https://images.unsplash.com/photo-1614294149010-950b698f72c0?q=80&w=2070&auto=format&fit=crop", // Wireframe/Node Logic
     },
     {
         id: "03",
@@ -29,6 +31,7 @@ const phases = [
         description: "Advanced animation & rigging.",
         color: "from-emerald-500 to-teal-500",
         tech: "ANIMATION",
+        image: "https://images.unsplash.com/photo-1612151855475-877969f432cc?q=80&w=2070&auto=format&fit=crop", // Gaming Controller / Neon Vibes (Input/Movement)
     },
     {
         id: "04",
@@ -37,8 +40,11 @@ const phases = [
         description: "Pipelines, debugging & shipping.",
         color: "from-primary to-orange-500",
         tech: "PUBLISHING",
+        image: "https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=2070&auto=format&fit=crop", // E-Sports / Finished Game Screen
     },
 ];
+
+
 
 export default function ProcessSection() {
     const sectionRef = useRef<HTMLDivElement>(null);
@@ -154,8 +160,15 @@ function ShufflingCard({ phase, index, total, progress }: { phase: any, index: n
             <TiltCard className="w-full h-full relative group">
                 <div className="relative h-full w-full bg-[#0F0F11] border border-white/10 rounded-[32px] overflow-hidden flex flex-col p-6 md:p-8 shadow-2xl transition-colors hover:border-primary/50">
 
+                    {/* Background Image */}
+                    <div
+                        className="absolute inset-0 bg-cover bg-center grayscale group-hover:grayscale-0 transition-all duration-700 opacity-60 group-hover:opacity-80"
+                        style={{ backgroundImage: `url('${phase.image}')` }}
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#0F0F11] via-[#0F0F11]/80 to-transparent" />
+
                     {/* Header */}
-                    <div className="flex justify-between items-center mb-auto md:mb-10">
+                    <div className="relative z-10 flex justify-between items-center mb-auto md:mb-10">
                         <div className="flex items-center gap-2">
                             <Layers size={14} className="text-primary" />
                             <span className="font-robot text-[10px] uppercase tracking-widest text-white/60 font-bold">
@@ -168,7 +181,7 @@ function ShufflingCard({ phase, index, total, progress }: { phase: any, index: n
                     </div>
 
                     {/* Content */}
-                    <div className="mt-8 md:mt-auto">
+                    <div className="relative z-10 mt-8 md:mt-auto">
                         <div className={`w-16 h-1 bg-gradient-to-r ${phase.color} mb-6 rounded-full`} />
 
                         <h3 className="font-robot text-3xl md:text-5xl font-black uppercase tracking-tighter text-white mb-4 leading-[0.9]">

@@ -8,20 +8,16 @@ export default function AboutSection() {
         <section className="py-32 bg-surface relative overflow-hidden transition-colors duration-300" suppressHydrationWarning>
             <div className="container mx-auto px-6 grid md:grid-cols-2 gap-20 items-center" suppressHydrationWarning>
                 <ScrollReveal direction="left" rotateX={20} rotateY={20} distance={50}>
-                    <div className="relative aspect-square rounded-3xl overflow-hidden border border-border group" suppressHydrationWarning>
-                        <video
-                            autoPlay
-                            muted
-                            loop
-                            playsInline
-                            className="w-full h-full object-cover grayscale brightness-50 group-hover:grayscale-0 group-hover:brightness-100 transition-all duration-700"
-                        >
-                            <source src="https://assets.mixkit.co/videos/preview/mixkit-flying-over-a-futuristic-city-at-night-42111-large.mp4" type="video/mp4" />
-                        </video>
-                        <div className="absolute inset-0 flex items-center justify-center" suppressHydrationWarning>
+                    <div className="relative aspect-square rounded-3xl overflow-hidden border border-border group bg-background" suppressHydrationWarning>
+                        <img
+                            src="https://images.unsplash.com/photo-1614850523296-d8c1af93d400?q=80&w=2070&auto=format&fit=crop"
+                            alt="Industry Standard 3D Render"
+                            className="w-full h-full object-cover grayscale brightness-50 group-hover:grayscale-0 group-hover:brightness-100 transition-all duration-700 scale-110 group-hover:scale-100"
+                        />
+                        <div className="absolute inset-0 flex items-center justify-center pointer-events-none" suppressHydrationWarning>
                             <h2 className="font-robot text-8xl font-black text-white/5 tracking-tighter uppercase">CREATIVE</h2>
                         </div>
-                        <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-background to-transparent opacity-60" suppressHydrationWarning />
+                        <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-background to-transparent opacity-60 pointer-events-none" suppressHydrationWarning />
                     </div>
                 </ScrollReveal>
 

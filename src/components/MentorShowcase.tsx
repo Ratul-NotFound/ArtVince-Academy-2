@@ -11,28 +11,28 @@ const mentors = [
         name: "Marcus Thorne",
         role: "Head of Character Art",
         studio: "Ex-Ubisoft / Sony",
-        image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=1974&auto=format&fit=crop",
+        image: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?q=80&w=1974&auto=format&fit=crop", // Rugged creative look
         tags: ["Character Modeling", "Anatomy", "Texturing"],
     },
     {
         name: "Elena Vance",
         role: "Technical Art Director",
         studio: "Ex-Epic Games",
-        image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=1974&auto=format&fit=crop",
+        image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=1964&auto=format&fit=crop", // Pro tech look
         tags: ["Unreal Engine", "Shaders", "Blueprints"],
     },
     {
         name: "David Chen",
         role: "Lead Game Designer",
         studio: "Ex-Blizzard",
-        image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=1974&auto=format&fit=crop",
+        image: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=1974&auto=format&fit=crop", // Creative director vibe
         tags: ["Mechanics", "Economy", "Narrative"],
     },
     {
         name: "Sarah Miller",
         role: "Senior Animator",
         studio: "Ex-Naughty Dog",
-        image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=1976&auto=format&fit=crop",
+        image: "https://images.unsplash.com/photo-1531123897727-8f129e1688ce?q=80&w=1974&auto=format&fit=crop", // Modern animator look
         tags: ["Mocap", "Keyframes", "Rigging"],
     },
 ];

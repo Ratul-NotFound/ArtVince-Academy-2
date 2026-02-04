@@ -1,11 +1,23 @@
 "use client";
 
-import { motion, useScroll, useTransform, useSpring, useMotionValue } from "framer-motion";
-import { useRef, useEffect } from "react";
+import { motion, useScroll, useTransform, useSpring, useMotionValue, AnimatePresence } from "framer-motion";
+import { useRef, useEffect, useState } from "react";
 import ScrollReveal from "./ScrollReveal";
+
+// Hero background images - curated for 3D art & gaming industry
+const heroImages = [
+    "https://images.unsplash.com/photo-1552820728-8b83bb6b2b0f?q=80&w=2070&auto=format&fit=crop", // Gaming atmosphere
+    "https://images.unsplash.com/photo-1612287230202-1ff1d85d1bdf?q=80&w=2071&auto=format&fit=crop", // VR headset gaming
+    "https://images.unsplash.com/photo-1538481199705-c710c4e965fc?q=80&w=2065&auto=format&fit=crop", // Esports gaming
+    "https://images.unsplash.com/photo-1593305841991-05c297ba4575?q=80&w=2074&auto=format&fit=crop", // Gaming controller
+    "https://images.unsplash.com/photo-1560419015-7c427e8ae5ba?q=80&w=2070&auto=format&fit=crop", // Gaming setup RGB
+];
 
 export default function Hero() {
     const containerRef = useRef(null);
+    const [currentImageIndex, setCurrentImageIndex] = useState(0);
+    const [mounted, setMounted] = useState(false);
+
     const { scrollYProgress } = useScroll({
         target: containerRef,
         offset: ["start start", "end start"],
@@ -20,6 +32,15 @@ export default function Hero() {
     const bgShiftX = useSpring(useTransform(mouseX, [-0.5, 0.5], [-50, 50]));
     const bgShiftY = useSpring(useTransform(mouseY, [-0.5, 0.5], [-30, 30]));
 
+    // Auto-cycle images every 5 seconds
+    useEffect(() => {
+        setMounted(true);
+        const interval = setInterval(() => {
+            setCurrentImageIndex((prev) => (prev + 1) % heroImages.length);
+        }, 5000);
+        return () => clearInterval(interval);
+    }, []);
+
     useEffect(() => {
         const handleMouseMove = (e: MouseEvent) => {
             const { innerWidth, innerHeight } = window;
@@ -33,11 +54,9 @@ export default function Hero() {
     }, []);
 
     // Scroll-based transforms
-    // bgY is now combined into combinedBgY
     const bgScale = useTransform(scrollYProgress, [0, 1], [1, 1.2]);
     const contentOpacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
     const contentScale = useTransform(scrollYProgress, [0, 0.5], [1, 0.8]);
-    // contentY is now combined into combinedContentY
 
     // Combined interactions
     const combinedBgY = useTransform([scrollYProgress, mouseY], ([s, m]) => {
@@ -48,6 +67,33 @@ export default function Hero() {
         return ((s as number) * -100) + ((m as number) * 20);
     });
 
+    // Image transition variants
+    const imageVariants = {
+        enter: {
+            opacity: 0,
+            scale: 1.2,
+            filter: "blur(20px)",
+        },
+        center: {
+            opacity: 0.4,
+            scale: 1,
+            filter: "blur(0px)",
+            transition: {
+                duration: 1.5,
+                ease: [0.25, 0.46, 0.45, 0.94] as [number, number, number, number],
+            },
+        },
+        exit: {
+            opacity: 0,
+            scale: 0.9,
+            filter: "blur(10px)",
+            transition: {
+                duration: 1,
+                ease: "easeInOut" as const,
+            },
+        },
+    };
+
     return (
         <section ref={containerRef} className="relative h-[120vh] flex items-center justify-center overflow-hidden" suppressHydrationWarning>
             {/* Background Wrapper */}
@@ -57,7 +103,39 @@ export default function Hero() {
                 suppressHydrationWarning
             >
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-primary/30 via-background to-background opacity-70" suppressHydrationWarning />
-                <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center grayscale opacity-40 mix-blend-overlay" suppressHydrationWarning />
+
+                {/* Animated Image Slideshow */}
+                <div className="absolute inset-0 overflow-hidden">
+                    <AnimatePresence mode="popLayout">
+                        <motion.div
+                            key={currentImageIndex}
+                            variants={imageVariants}
+                            initial="enter"
+                            animate="center"
+                            exit="exit"
+                            className="absolute inset-0 bg-cover bg-center grayscale mix-blend-overlay"
+                            style={{
+                                backgroundImage: mounted ? `url('${heroImages[currentImageIndex]}')` : `url('${heroImages[0]}')`,
+                            }}
+                            suppressHydrationWarning
+                        />
+                    </AnimatePresence>
+                </div>
+
+                {/* Image Progress Indicators */}
+                <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-20 flex gap-2">
+                    {heroImages.map((_, index) => (
+                        <button
+                            key={index}
+                            onClick={() => setCurrentImageIndex(index)}
+                            className={`h-1 rounded-full transition-all duration-500 ${index === currentImageIndex
+                                ? "w-8 bg-primary"
+                                : "w-2 bg-white/20 hover:bg-white/40"
+                                }`}
+                        />
+                    ))}
+                </div>
+
                 <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/60 to-background" suppressHydrationWarning />
             </motion.div>
 

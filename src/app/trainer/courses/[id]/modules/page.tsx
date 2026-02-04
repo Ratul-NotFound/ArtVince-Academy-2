@@ -32,6 +32,7 @@ import {
     Save
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import Portal from "@/components/Portal";
 
 export default function TrainerModulesPage() {
     const { id } = useParams();
@@ -212,65 +213,67 @@ export default function TrainerModulesPage() {
                 )}
 
                 {/* Module Modal */}
-                <AnimatePresence>
-                    {isModalOpen && (
-                        <div className="fixed inset-0 z-[100] flex items-center justify-center p-6">
-                            <motion.div
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                                exit={{ opacity: 0 }}
-                                onClick={() => setIsModalOpen(false)}
-                                className="absolute inset-0 bg-background/80 backdrop-blur-md"
-                            />
-                            <motion.div
-                                initial={{ opacity: 0, scale: 0.95 }}
-                                animate={{ opacity: 1, scale: 1 }}
-                                exit={{ opacity: 0, scale: 0.95 }}
-                                className="relative bg-surface border border-border w-full max-w-xl rounded-3xl p-10 overflow-y-auto max-h-[90vh] shadow-2xl"
-                            >
-                                <h2 className="font-robot text-2xl font-bold uppercase tracking-tighter mb-8">
-                                    {editingModule ? "Recalibrate Module" : "Assemble Module"}
-                                </h2>
-                                <form onSubmit={handleSubmit} className="space-y-6">
-                                    <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
+                <Portal>
+                    <AnimatePresence>
+                        {isModalOpen && (
+                            <div className="fixed inset-0 z-[9999] flex items-center justify-center p-6">
+                                <motion.div
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    exit={{ opacity: 0 }}
+                                    onClick={() => setIsModalOpen(false)}
+                                    className="absolute inset-0 bg-background/80 backdrop-blur-md"
+                                />
+                                <motion.div
+                                    initial={{ opacity: 0, scale: 0.95 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    exit={{ opacity: 0, scale: 0.95 }}
+                                    className="relative bg-surface border border-border w-full max-w-xl rounded-3xl p-10 overflow-y-auto max-h-[90vh] shadow-2xl"
+                                >
+                                    <h2 className="font-robot text-2xl font-bold uppercase tracking-tighter mb-8">
+                                        {editingModule ? "Recalibrate Module" : "Assemble Module"}
+                                    </h2>
+                                    <form onSubmit={handleSubmit} className="space-y-6">
+                                        <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
+                                            <div className="space-y-2">
+                                                <label className="font-robot text-[10px] uppercase tracking-widest text-foreground/40 ml-4">Order</label>
+                                                <input required type="number" value={formData.order} onChange={(e) => setFormData({ ...formData, order: Number(e.target.value) })} className="w-full bg-foreground/5 border border-border rounded-xl px-4 py-3 font-inter text-sm outline-none focus:border-primary transition-all" />
+                                            </div>
+                                            <div className="sm:col-span-3 space-y-2">
+                                                <label className="font-robot text-[10px] uppercase tracking-widest text-foreground/40 ml-4">Module Title</label>
+                                                <input required type="text" value={formData.title} onChange={(e) => setFormData({ ...formData, title: e.target.value })} className="w-full bg-foreground/5 border border-border rounded-xl px-4 py-3 font-inter text-sm outline-none focus:border-primary transition-all" placeholder="e.g. Introduction to Anatomy" />
+                                            </div>
+                                        </div>
                                         <div className="space-y-2">
-                                            <label className="font-robot text-[10px] uppercase tracking-widest text-foreground/40 ml-4">Order</label>
-                                            <input required type="number" value={formData.order} onChange={(e) => setFormData({ ...formData, order: Number(e.target.value) })} className="w-full bg-foreground/5 border border-border rounded-xl px-4 py-3 font-inter text-sm outline-none focus:border-primary transition-all" />
+                                            <label className="font-robot text-[10px] uppercase tracking-widest text-foreground/40 ml-4">Video URL (YouTube/Vimeo)</label>
+                                            <input type="text" value={formData.videoUrl} onChange={(e) => setFormData({ ...formData, videoUrl: e.target.value })} className="w-full bg-foreground/5 border border-border rounded-xl px-4 py-3 font-inter text-sm outline-none focus:border-primary transition-all" placeholder="https://..." />
                                         </div>
-                                        <div className="sm:col-span-3 space-y-2">
-                                            <label className="font-robot text-[10px] uppercase tracking-widest text-foreground/40 ml-4">Module Title</label>
-                                            <input required type="text" value={formData.title} onChange={(e) => setFormData({ ...formData, title: e.target.value })} className="w-full bg-foreground/5 border border-border rounded-xl px-4 py-3 font-inter text-sm outline-none focus:border-primary transition-all" placeholder="e.g. Introduction to Anatomy" />
+                                        <div className="space-y-2">
+                                            <label className="font-robot text-[10px] uppercase tracking-widest text-foreground/40 ml-4">Module Dossier (Content)</label>
+                                            <textarea rows={6} value={formData.content} onChange={(e) => setFormData({ ...formData, content: e.target.value })} className="w-full bg-foreground/5 border border-border rounded-xl px-4 py-3 font-inter text-sm outline-none focus:border-primary transition-all resize-none" placeholder="Enter module details, notes, or instructions..." />
                                         </div>
-                                    </div>
-                                    <div className="space-y-2">
-                                        <label className="font-robot text-[10px] uppercase tracking-widest text-foreground/40 ml-4">Video URL (YouTube/Vimeo)</label>
-                                        <input type="text" value={formData.videoUrl} onChange={(e) => setFormData({ ...formData, videoUrl: e.target.value })} className="w-full bg-foreground/5 border border-border rounded-xl px-4 py-3 font-inter text-sm outline-none focus:border-primary transition-all" placeholder="https://..." />
-                                    </div>
-                                    <div className="space-y-2">
-                                        <label className="font-robot text-[10px] uppercase tracking-widest text-foreground/40 ml-4">Module Dossier (Content)</label>
-                                        <textarea rows={6} value={formData.content} onChange={(e) => setFormData({ ...formData, content: e.target.value })} className="w-full bg-foreground/5 border border-border rounded-xl px-4 py-3 font-inter text-sm outline-none focus:border-primary transition-all resize-none" placeholder="Enter module details, notes, or instructions..." />
-                                    </div>
 
-                                    <div className="flex gap-4 pt-4">
-                                        <button
-                                            type="submit"
-                                            className="flex-1 bg-primary text-white py-4 rounded-xl font-robot text-xs uppercase tracking-widest hover:bg-foreground hover:text-background transition-all flex items-center justify-center gap-2"
-                                        >
-                                            <Save size={16} /> {editingModule ? "Save Changes" : "Commit Module"}
-                                        </button>
-                                        <button
-                                            type="button"
-                                            onClick={() => setIsModalOpen(false)}
-                                            className="px-8 border border-border rounded-xl font-robot text-xs uppercase tracking-widest hover:bg-foreground/5 transition-all"
-                                        >
-                                            Cancel
-                                        </button>
-                                    </div>
-                                </form>
-                            </motion.div>
-                        </div>
-                    )}
-                </AnimatePresence>
+                                        <div className="flex gap-4 pt-4">
+                                            <button
+                                                type="submit"
+                                                className="flex-1 bg-primary text-white py-4 rounded-xl font-robot text-xs uppercase tracking-widest hover:bg-foreground hover:text-background transition-all flex items-center justify-center gap-2"
+                                            >
+                                                <Save size={16} /> {editingModule ? "Save Changes" : "Commit Module"}
+                                            </button>
+                                            <button
+                                                type="button"
+                                                onClick={() => setIsModalOpen(false)}
+                                                className="px-8 border border-border rounded-xl font-robot text-xs uppercase tracking-widest hover:bg-foreground/5 transition-all"
+                                            >
+                                                Cancel
+                                            </button>
+                                        </div>
+                                    </form>
+                                </motion.div>
+                            </div>
+                        )}
+                    </AnimatePresence>
+                </Portal>
             </DashboardLayout>
         </RoleGuard>
     );

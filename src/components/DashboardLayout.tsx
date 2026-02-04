@@ -54,7 +54,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
                 <main className="flex-1 overflow-y-auto custom-scrollbar p-6 md:p-10 relative">
                     {/* Background Subtle Gradient */}
                     <div className="absolute top-0 left-0 w-full h-96 bg-gradient-to-b from-primary/5 to-transparent pointer-events-none" />
-                    <div className="relative z-10 max-w-7xl mx-auto">
+                    <div className="relative max-w-7xl mx-auto">
                         {children}
                     </div>
                 </main>

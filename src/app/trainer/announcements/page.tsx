@@ -9,6 +9,7 @@ import { collection, query, where, getDocs, addDoc, orderBy, deleteDoc, doc } fr
 import { Course } from "@/types";
 import { motion, AnimatePresence } from "framer-motion";
 import { Megaphone, Plus, Trash2, Loader2, Send, Save, BookOpen, AlertCircle } from "lucide-react";
+import Portal from "@/components/Portal";
 
 interface Announcement {
     id: string;
@@ -170,69 +171,71 @@ export default function TrainerAnnouncementsPage() {
                 </div>
 
                 {/* Broadcast Modal */}
-                <AnimatePresence>
-                    {isModalOpen && (
-                        <div className="fixed inset-0 z-[100] flex items-center justify-center p-6">
-                            <motion.div
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                                exit={{ opacity: 0 }}
-                                onClick={() => setIsModalOpen(false)}
-                                className="absolute inset-0 bg-background/80 backdrop-blur-md"
-                            />
-                            <motion.div
-                                initial={{ opacity: 0, scale: 0.95 }}
-                                animate={{ opacity: 1, scale: 1 }}
-                                exit={{ opacity: 0, scale: 0.95 }}
-                                className="relative bg-surface border border-border w-full max-w-xl rounded-[40px] p-12 overflow-y-auto max-h-[90vh] shadow-2xl"
-                            >
-                                <h2 className="font-robot text-3xl font-bold uppercase tracking-tighter mb-8">
-                                    Academy <span className="text-primary">Transmission</span>
-                                </h2>
-                                <form onSubmit={handleSubmit} className="space-y-6">
-                                    <div className="space-y-2">
-                                        <label className="font-robot text-[10px] uppercase tracking-widest text-foreground/40 ml-4 flex items-center gap-2">
-                                            <BookOpen size={12} /> Target Sector (Course)
-                                        </label>
-                                        <select
-                                            required
-                                            value={selectedCourseId}
-                                            onChange={(e) => setSelectedCourseId(e.target.value)}
-                                            className="w-full bg-foreground/5 border border-border rounded-2xl px-6 py-4 font-robot text-xs uppercase tracking-widest font-bold outline-none focus:border-primary transition-all text-foreground appearance-none"
-                                        >
-                                            <option value="" disabled>Select sector...</option>
-                                            {courses.map(c => <option key={c.id} value={c.id}>{c.title}</option>)}
-                                        </select>
-                                    </div>
-                                    <div className="space-y-2">
-                                        <label className="font-robot text-[10px] uppercase tracking-widest text-foreground/40 ml-4">Alert Subject</label>
-                                        <input required type="text" value={formData.title} onChange={(e) => setFormData({ ...formData, title: e.target.value })} className="w-full bg-foreground/5 border border-border rounded-2xl px-6 py-4 font-inter text-sm outline-none focus:border-primary transition-all text-foreground" placeholder="e.g. Schedule Override" />
-                                    </div>
-                                    <div className="space-y-2">
-                                        <label className="font-robot text-[10px] uppercase tracking-widest text-foreground/40 ml-4">Tactical Data (Content)</label>
-                                        <textarea rows={6} value={formData.content} onChange={(e) => setFormData({ ...formData, content: e.target.value })} className="w-full bg-foreground/5 border border-border rounded-3xl px-6 py-4 font-inter text-sm outline-none focus:border-primary transition-all text-foreground resize-none" placeholder="Enter message details..." />
-                                    </div>
+                <Portal>
+                    <AnimatePresence>
+                        {isModalOpen && (
+                            <div className="fixed inset-0 z-[9999] flex items-center justify-center p-6">
+                                <motion.div
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    exit={{ opacity: 0 }}
+                                    onClick={() => setIsModalOpen(false)}
+                                    className="absolute inset-0 bg-background/80 backdrop-blur-md"
+                                />
+                                <motion.div
+                                    initial={{ opacity: 0, scale: 0.95 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    exit={{ opacity: 0, scale: 0.95 }}
+                                    className="relative bg-surface border border-border w-full max-w-xl rounded-[40px] p-12 overflow-y-auto max-h-[90vh] shadow-2xl"
+                                >
+                                    <h2 className="font-robot text-3xl font-bold uppercase tracking-tighter mb-8">
+                                        Academy <span className="text-primary">Transmission</span>
+                                    </h2>
+                                    <form onSubmit={handleSubmit} className="space-y-6">
+                                        <div className="space-y-2">
+                                            <label className="font-robot text-[10px] uppercase tracking-widest text-foreground/40 ml-4 flex items-center gap-2">
+                                                <BookOpen size={12} /> Target Sector (Course)
+                                            </label>
+                                            <select
+                                                required
+                                                value={selectedCourseId}
+                                                onChange={(e) => setSelectedCourseId(e.target.value)}
+                                                className="w-full bg-foreground/5 border border-border rounded-2xl px-6 py-4 font-robot text-xs uppercase tracking-widest font-bold outline-none focus:border-primary transition-all text-foreground appearance-none"
+                                            >
+                                                <option value="" disabled>Select sector...</option>
+                                                {courses.map(c => <option key={c.id} value={c.id}>{c.title}</option>)}
+                                            </select>
+                                        </div>
+                                        <div className="space-y-2">
+                                            <label className="font-robot text-[10px] uppercase tracking-widest text-foreground/40 ml-4">Alert Subject</label>
+                                            <input required type="text" value={formData.title} onChange={(e) => setFormData({ ...formData, title: e.target.value })} className="w-full bg-foreground/5 border border-border rounded-2xl px-6 py-4 font-inter text-sm outline-none focus:border-primary transition-all text-foreground" placeholder="e.g. Schedule Override" />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <label className="font-robot text-[10px] uppercase tracking-widest text-foreground/40 ml-4">Tactical Data (Content)</label>
+                                            <textarea rows={6} value={formData.content} onChange={(e) => setFormData({ ...formData, content: e.target.value })} className="w-full bg-foreground/5 border border-border rounded-3xl px-6 py-4 font-inter text-sm outline-none focus:border-primary transition-all text-foreground resize-none" placeholder="Enter message details..." />
+                                        </div>
 
-                                    <div className="flex gap-4 pt-6">
-                                        <button
-                                            type="submit"
-                                            className="flex-1 bg-primary text-white py-5 rounded-2xl font-robot text-[10px] uppercase tracking-[0.3em] font-bold shadow-2xl shadow-primary/20 hover:scale-105 transition-all flex items-center justify-center gap-2"
-                                        >
-                                            <Send size={16} /> Deploy Broadcast
-                                        </button>
-                                        <button
-                                            type="button"
-                                            onClick={() => setIsModalOpen(false)}
-                                            className="px-8 border border-border rounded-2xl font-robot text-[10px] uppercase tracking-widest font-bold hover:bg-foreground/5 transition-all"
-                                        >
-                                            Abort
-                                        </button>
-                                    </div>
-                                </form>
-                            </motion.div>
-                        </div>
-                    )}
-                </AnimatePresence>
+                                        <div className="flex gap-4 pt-6">
+                                            <button
+                                                type="submit"
+                                                className="flex-1 bg-primary text-white py-5 rounded-2xl font-robot text-[10px] uppercase tracking-[0.3em] font-bold shadow-2xl shadow-primary/20 hover:scale-105 transition-all flex items-center justify-center gap-2"
+                                            >
+                                                <Send size={16} /> Deploy Broadcast
+                                            </button>
+                                            <button
+                                                type="button"
+                                                onClick={() => setIsModalOpen(false)}
+                                                className="px-8 border border-border rounded-2xl font-robot text-[10px] uppercase tracking-widest font-bold hover:bg-foreground/5 transition-all"
+                                            >
+                                                Abort
+                                            </button>
+                                        </div>
+                                    </form>
+                                </motion.div>
+                            </div>
+                        )}
+                    </AnimatePresence>
+                </Portal>
             </DashboardLayout>
         </RoleGuard>
     );

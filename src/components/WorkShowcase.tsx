@@ -10,28 +10,28 @@ const works = [
     {
         title: "Cybernetic Samurai",
         artist: "Student Project - Leo K.",
-        image: "https://images.unsplash.com/photo-1635273051937-200744733306?q=80&w=2070&auto=format&fit=crop",
+        image: "https://images.unsplash.com/photo-1626379953822-baec19c3accd?q=80&w=2070&auto=format&fit=crop", // Sci-fi character
         category: "3D Character Art",
         span: "md:col-span-2 md:row-span-2",
     },
     {
         title: "The Last Outpost",
         artist: "Mentor Demo - Sarah J.",
-        image: "https://images.unsplash.com/photo-1614728263952-84ea256f9679?q=80&w=1954&auto=format&fit=crop",
+        image: "https://images.unsplash.com/photo-1547394765-185e1e68f34e?q=80&w=2070&auto=format&fit=crop", // Futuristic environment
         category: "Environment Design",
         span: "md:col-span-1 md:row-span-1",
     },
     {
-        title: "Viking Axe",
+        title: "Tactical Weapons",
         artist: "Student Project - Mark R.",
-        image: "https://images.unsplash.com/photo-1590333744342-6e2182ce6a72?q=80&w=2070&auto=format&fit=crop",
+        image: "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?q=80&w=2047&auto=format&fit=crop", // Weapon prop design
         category: "Hard Surface Modeling",
         span: "md:col-span-1 md:row-span-1",
     },
     {
-        title: "Neon City Drive",
+        title: "Neon City VFX",
         artist: "Technical Art - Alex B.",
-        image: "https://images.unsplash.com/photo-1605810230434-7631ac76ec81?q=80&w=2070&auto=format&fit=crop",
+        image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?q=80&w=2070&auto=format&fit=crop", // VFX neon city
         category: "Shaders & VFX",
         span: "md:col-span-2 md:row-span-1",
     },
