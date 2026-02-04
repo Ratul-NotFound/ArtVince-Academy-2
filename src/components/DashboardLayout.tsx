@@ -30,7 +30,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
     if (!user) return null;
 
     return (
-        <div className="flex h-screen bg-background overflow-hidden">
+        <div className="flex h-screen bg-background overflow-hidden pt-20">
             {/* Sidebar (Desktop) */}
             <div className="hidden md:block h-full">
                 <Sidebar />

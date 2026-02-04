@@ -2,41 +2,34 @@
 
 import { motion } from "framer-motion";
 import Image from "next/image";
-import { Github, Twitter, Linkedin } from "lucide-react";
+import { useState, useEffect } from "react";
+import { db } from "@/lib/firebase";
+import { collection, query, where, getDocs } from "firebase/firestore";
+import { UserProfile } from "@/types";
+import { Github, Twitter, Linkedin, Loader2, User } from "lucide-react";
 import Footer from "@/components/Footer";
 
-const mentors = [
-    {
-        name: "Alex 'Vince' Rivers",
-        role: "Lead Game Architect",
-        specialty: "Unreal Engine 5 & C++",
-        image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=1974&auto=format&fit=crop",
-        bio: "Ex-Ubisoft and CD Projekt Red architect with 15+ years in AAA development."
-    },
-    {
-        name: "Sarah 'Maya' Chen",
-        role: "Senior Character Artist",
-        specialty: "ZBrush & Substance",
-        image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=1974&auto=format&fit=crop",
-        bio: "Specializing in hyper-realistic anatomy and stylized character pipelines."
-    },
-    {
-        name: "Marcus Thorne",
-        role: "Weapon Designer",
-        specialty: "Hard Surface Modeling",
-        image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=1974&auto=format&fit=crop",
-        bio: "Leading the weapon art team at major gaming studios for over a decade."
-    },
-    {
-        name: "Elena Rodriguez",
-        role: "Creative Director",
-        specialty: "Visual Storytelling",
-        image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=1976&auto=format&fit=crop",
-        bio: "Focusing on the intersection of narrative design and immersive 3D art."
-    }
-];
-
 export default function MentorsPage() {
+    const [mentors, setMentors] = useState<UserProfile[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchMentors = async () => {
+            try {
+                const q = query(collection(db, "users"), where("role", "==", "trainer"));
+                const querySnapshot = await getDocs(q);
+                const trainers = querySnapshot.docs.map(doc => doc.data() as UserProfile);
+                setMentors(trainers);
+            } catch (error) {
+                console.error("Error fetching mentors:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchMentors();
+    }, []);
+
     return (
         <div className="bg-background min-h-screen pt-32 text-foreground transition-colors duration-300">
             <div className="container mx-auto px-6 mb-20 text-center">
@@ -51,33 +44,53 @@ export default function MentorsPage() {
                 </motion.div>
             </div>
 
-            <div className="container mx-auto px-6 grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-32">
-                {mentors.map((mentor, i) => (
-                    <motion.div
-                        key={i}
-                        initial={{ opacity: 0, scale: 0.9 }}
-                        whileInView={{ opacity: 1, scale: 1 }}
-                        transition={{ delay: i * 0.1 }}
-                        className="group relative h-[600px] rounded-3xl overflow-hidden border border-border bg-surface"
-                    >
-                        <Image
-                            src={mentor.image}
-                            alt={mentor.name}
-                            fill
-                            className="object-cover grayscale group-hover:grayscale-0 transition-all duration-700"
-                        />
-                        <div className="absolute inset-x-0 bottom-0 p-8 translate-y-24 group-hover:translate-y-0 transition-transform duration-500 bg-background/60 backdrop-blur-md">
-                            <span className="font-robot text-[10px] uppercase tracking-widest text-primary mb-2 block">{mentor.role}</span>
-                            <h3 className="font-robot text-2xl font-bold uppercase mb-4 text-foreground">{mentor.name}</h3>
-                            <p className="font-inter text-sm text-foreground/50 mb-6">{mentor.bio}</p>
-                            <div className="flex gap-4">
-                                <Linkedin size={18} className="text-foreground/40 hover:text-primary cursor-pointer transition-colors" />
-                                <Twitter size={18} className="text-foreground/40 hover:text-primary cursor-pointer transition-colors" />
-                                <Github size={18} className="text-foreground/40 hover:text-primary cursor-pointer transition-colors" />
+            <div className="container mx-auto px-6 mb-32">
+                {loading ? (
+                    <div className="flex items-center justify-center py-20">
+                        <Loader2 className="animate-spin text-primary" size={48} />
+                    </div>
+                ) : (
+                    <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                        {mentors.map((mentor, i) => (
+                            <motion.div
+                                key={mentor.uid}
+                                initial={{ opacity: 0, scale: 0.9 }}
+                                whileInView={{ opacity: 1, scale: 1 }}
+                                transition={{ delay: i * 0.1 }}
+                                className="group relative h-[600px] rounded-3xl overflow-hidden border border-border bg-surface"
+                            >
+                                {mentor.photoURL ? (
+                                    <Image
+                                        src={mentor.photoURL}
+                                        alt={mentor.displayName || "Mentor"}
+                                        fill
+                                        className="object-cover grayscale group-hover:grayscale-0 transition-all duration-700"
+                                    />
+                                ) : (
+                                    <div className="w-full h-full flex items-center justify-center bg-foreground/5 text-foreground/10">
+                                        <User size={120} strokeWidth={1} />
+                                    </div>
+                                )}
+                                <div className="absolute inset-x-0 bottom-0 p-8 translate-y-24 group-hover:translate-y-0 transition-transform duration-500 bg-background/60 backdrop-blur-md">
+                                    <span className="font-robot text-[10px] uppercase tracking-widest text-primary mb-2 block">{mentor.studio || "Academy Instructor"}</span>
+                                    <h3 className="font-robot text-2xl font-bold uppercase mb-4 text-foreground">{mentor.displayName || "Agent"}</h3>
+                                    <p className="font-inter text-sm text-foreground/50 mb-6 line-clamp-3">{mentor.bio || "This master mentor has not yet synchronized their personal dossier."}</p>
+                                    <div className="flex gap-4">
+                                        <Linkedin size={18} className="text-foreground/40 hover:text-primary cursor-pointer transition-colors" />
+                                        <Twitter size={18} className="text-foreground/40 hover:text-primary cursor-pointer transition-colors" />
+                                        <Github size={18} className="text-foreground/40 hover:text-primary cursor-pointer transition-colors" />
+                                    </div>
+                                </div>
+                            </motion.div>
+                        ))}
+
+                        {!loading && mentors.length === 0 && (
+                            <div className="col-span-full py-20 border-2 border-dashed border-border rounded-3xl flex flex-col items-center justify-center text-center space-y-4">
+                                <p className="font-inter text-sm text-foreground/30 italic">Operative registry currently empty. Initializing new cycles...</p>
                             </div>
-                        </div>
-                    </motion.div>
-                ))}
+                        )}
+                    </div>
+                )}
             </div>
 
             <Footer />

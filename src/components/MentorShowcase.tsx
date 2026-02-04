@@ -40,9 +40,9 @@ const mentors = [
 export default function MentorShowcase() {
     return (
         <section className="py-32 bg-surface">
-            <div className="container mx-auto px-6">
+            <div className="container mx-auto px-6" suppressHydrationWarning>
                 <ScrollReveal direction="up" distance={50}>
-                    <div className="flex flex-col md:flex-row justify-between items-end mb-20 gap-8">
+                    <div className="flex flex-col md:flex-row justify-between items-end mb-20 gap-8" suppressHydrationWarning>
                         <div>
                             <span className="font-handwritten text-3xl text-primary block mb-4">The Masters</span>
                             <h2 className="font-robot text-5xl md:text-8xl font-black uppercase tracking-tighter text-foreground leading-none">

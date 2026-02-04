@@ -14,8 +14,10 @@ export default function UserDashboard() {
     const { user, profile } = useAuth();
     const [enrolledCourses, setEnrolledCourses] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
+    const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
+        setMounted(true);
         const fetchDashboardData = async () => {
             if (!profile?.uid || !profile?.enrolledCourses || profile.enrolledCourses.length === 0) {
                 setLoading(false);
@@ -72,7 +74,7 @@ export default function UserDashboard() {
             <div className="mb-12">
                 <span className="font-handwritten text-3xl text-primary block mb-2">Welcome Back</span>
                 <h1 className="font-robot text-4xl md:text-6xl font-bold uppercase tracking-tighter text-foreground">
-                    {user?.displayName || "Agent"} <span className="text-outline-theme text-transparent">_{user?.uid.slice(0, 3).toUpperCase()}</span>
+                    {mounted ? (user?.displayName || "Agent") : "Agent"} <span className="text-outline-theme text-transparent">_{mounted ? user?.uid.slice(0, 3).toUpperCase() : "000"}</span>
                 </h1>
             </div>
 

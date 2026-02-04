@@ -40,9 +40,9 @@ const works = [
 export default function WorkShowcase() {
     return (
         <section className="py-32 bg-surface overflow-hidden">
-            <div className="container mx-auto px-6">
+            <div className="container mx-auto px-6" suppressHydrationWarning>
                 <ScrollReveal direction="up" distance={50}>
-                    <div className="text-center mb-20">
+                    <div className="text-center mb-20" suppressHydrationWarning>
                         <span className="font-handwritten text-3xl text-primary block mb-4">Excellence in Motion</span>
                         <h2 className="font-robot text-5xl md:text-8xl font-black uppercase tracking-tighter text-foreground mb-6">
                             STUDENT <span className="text-outline-theme text-transparent">SHOWCASE</span>

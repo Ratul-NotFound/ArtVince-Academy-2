@@ -54,14 +54,14 @@ export default function ProcessSection() {
     });
 
     return (
-        <section ref={sectionRef} className="relative h-[300vh] bg-background">
-            <div className="sticky top-0 h-screen w-full flex flex-col items-center overflow-hidden bg-grid-white/[0.02]">
+        <section ref={sectionRef} className="relative h-[300vh] bg-background" suppressHydrationWarning>
+            <div className="sticky top-0 h-screen w-full flex flex-col items-center overflow-hidden bg-grid-white/[0.02]" suppressHydrationWarning>
 
                 {/* Ambient Glow - Centered in background */}
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-primary/20 blur-[100px] rounded-full opacity-50 pointer-events-none" />
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-primary/20 blur-[100px] rounded-full opacity-50 pointer-events-none" suppressHydrationWarning />
 
                 {/* Header Information - Flex Item */}
-                <div className="pt-12 md:pt-20 pb-4 text-center z-10 w-full px-4 shrink-0 pointer-events-none">
+                <div className="pt-12 md:pt-20 pb-4 text-center z-10 w-full px-4 shrink-0 pointer-events-none" suppressHydrationWarning>
                     <span className="font-robot text-[10px] uppercase tracking-[0.3em] text-primary mb-2 block font-bold">
                         Process Algorithm
                     </span>
@@ -71,15 +71,15 @@ export default function ProcessSection() {
                 </div>
 
                 {/* Card Stack Container - Flex Item (Grow) covers remaining space */}
-                <div className="relative w-full flex-grow flex items-center justify-center perspective-[1000px] min-h-0">
+                <div className="relative w-full flex-grow flex items-center justify-center perspective-[1000px] min-h-0" suppressHydrationWarning>
 
                     {/* Indicators behind cards */}
-                    <div className="absolute inset-x-8 top-1/2 -translate-y-1/2 flex justify-between pointer-events-none opacity-20 hidden md:flex">
-                        <div className="text-left">
+                    <div className="absolute inset-x-8 top-1/2 -translate-y-1/2 flex justify-between pointer-events-none opacity-20 hidden md:flex" suppressHydrationWarning>
+                        <div className="text-left" suppressHydrationWarning>
                             <ArrowRight className="rotate-180 mb-2 w-8 h-8 text-white" />
                             <span className="font-robot text-[10px] uppercase tracking-widest text-white display-block">Prev Phase</span>
                         </div>
-                        <div className="text-right">
+                        <div className="text-right" suppressHydrationWarning>
                             <ArrowRight className="mb-2 w-8 h-8 text-white ml-auto" />
                             <span className="font-robot text-[10px] uppercase tracking-widest text-white display-block">Next Phase</span>
                         </div>
@@ -97,12 +97,12 @@ export default function ProcessSection() {
                 </div>
 
                 {/* Progress Bar - Flex Item (Bottom) */}
-                <div className="pb-12 w-full max-w-md px-6 shrink-0 z-20">
-                    <div className="flex justify-between text-[10px] uppercase font-robot tracking-widest text-white/40 mb-2">
+                <div className="pb-12 w-full max-w-md px-6 shrink-0 z-20" suppressHydrationWarning>
+                    <div className="flex justify-between text-[10px] uppercase font-robot tracking-widest text-white/40 mb-2" suppressHydrationWarning>
                         <span>Initialization</span>
                         <span>Completion</span>
                     </div>
-                    <div className="h-1 bg-white/10 rounded-full overflow-hidden">
+                    <div className="h-1 bg-white/10 rounded-full overflow-hidden" suppressHydrationWarning>
                         <motion.div
                             className="h-full bg-primary"
                             style={{ scaleX: smoothProgress, transformOrigin: "left" }}

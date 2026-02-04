@@ -49,19 +49,20 @@ export default function Hero() {
     });
 
     return (
-        <section ref={containerRef} className="relative h-[120vh] flex items-center justify-center overflow-hidden">
+        <section ref={containerRef} className="relative h-[120vh] flex items-center justify-center overflow-hidden" suppressHydrationWarning>
             {/* Background Wrapper */}
             <motion.div
                 style={{ y: combinedBgY, scale: bgScale, x: bgShiftX }}
                 className="absolute inset-[-5%] z-0"
+                suppressHydrationWarning
             >
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-primary/30 via-background to-background opacity-70" />
-                <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center grayscale opacity-40 mix-blend-overlay" />
-                <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/60 to-background" />
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-primary/30 via-background to-background opacity-70" suppressHydrationWarning />
+                <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center grayscale opacity-40 mix-blend-overlay" suppressHydrationWarning />
+                <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/60 to-background" suppressHydrationWarning />
             </motion.div>
 
             {/* Content */}
-            <div className="container mx-auto px-6 relative z-10 text-center">
+            <div className="container mx-auto px-6 relative z-10 text-center" suppressHydrationWarning>
                 <ScrollReveal rotateX={30} distance={150} scale={0.7} blur={true}>
                     <motion.div
                         style={{ opacity: contentOpacity, scale: contentScale, y: combinedContentY, x: headlineX }}

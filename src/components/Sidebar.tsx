@@ -16,7 +16,8 @@ import {
     ClipboardList,
     Megaphone,
     Search,
-    DollarSign
+    DollarSign,
+    Globe
 } from "lucide-react";
 import { motion } from "framer-motion";
 
@@ -26,6 +27,7 @@ export default function Sidebar() {
 
     const getLinks = () => {
         const commonLinks = [
+            { name: "Return to Website", href: "/", icon: Globe },
             { name: "Overview", href: "/dashboard", icon: LayoutDashboard },
             { name: "Profile Dossier", href: "/dashboard/profile", icon: Users },
         ];
@@ -70,7 +72,7 @@ export default function Sidebar() {
         <aside className="w-64 border-r border-border p-6 flex flex-col h-full bg-background/50 backdrop-blur-xl">
             {/* Profile Brief */}
             <div className="mb-10 px-4">
-                <div className="w-12 h-12 rounded-xl bg-primary/20 flex items-center justify-center font-robot font-bold text-primary mb-4 text-xl">
+                <div className="w-12 h-12 rounded-xl bg-primary/20 flex items-center justify-center font-robot font-bold text-primary mb-4 text-xl" suppressHydrationWarning>
                     {profile?.displayName?.[0] || profile?.role?.[0].toUpperCase() || "A"}
                 </div>
                 <p className="font-robot text-sm font-bold uppercase tracking-tight text-foreground truncate">

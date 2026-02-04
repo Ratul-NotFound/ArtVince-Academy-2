@@ -32,10 +32,10 @@ export default function CoursesGrid() {
 
     return (
         <section className="py-32 bg-background overflow-hidden transition-colors duration-300">
-            <div className="container mx-auto px-6">
+            <div className="container mx-auto px-6" suppressHydrationWarning>
                 <ScrollReveal distance={50} direction="up">
-                    <div className="flex flex-col md:flex-row justify-between items-end mb-20 gap-8">
-                        <div>
+                    <div className="flex flex-col md:flex-row justify-between items-end mb-20 gap-8" suppressHydrationWarning>
+                        <div suppressHydrationWarning>
                             <span className="font-handwritten text-3xl text-primary block mb-2">Our Programs</span>
                             <h2 className="font-robot text-5xl md:text-7xl font-bold uppercase tracking-tighter text-foreground">
                                 Forging the <br /> <span className="text-outline-theme text-transparent">Next Generation</span>
@@ -48,11 +48,11 @@ export default function CoursesGrid() {
                 </ScrollReveal>
 
                 {loading ? (
-                    <div className="flex items-center justify-center py-20 text-primary">
+                    <div className="flex items-center justify-center py-20 text-primary" suppressHydrationWarning>
                         <Loader2 className="animate-spin" size={40} />
                     </div>
                 ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8" suppressHydrationWarning>
                         {courses.map((course) => (
                             <ScrollReveal key={course.id} distance={30} direction="up" rotateX={20}>
                                 <Link href={`/courses/${course.id}`}>
