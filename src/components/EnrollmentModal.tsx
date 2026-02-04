@@ -30,9 +30,9 @@ export default function EnrollmentModal({ course, isOpen, onClose }: EnrollmentM
     });
 
     const paymentNumbers = {
-        bKash: "017XXXXXXXX (Personal)",
-        Nagad: "018XXXXXXXX (Personal)",
-        Rocket: "019XXXXXXXX (Personal)",
+        bKash: process.env.NEXT_PUBLIC_BKASH_NUMBER || "(Contact Admin for Number)",
+        Nagad: process.env.NEXT_PUBLIC_NAGAD_NUMBER || "(Contact Admin for Number)",
+        Rocket: process.env.NEXT_PUBLIC_ROCKET_NUMBER || "(Contact Admin for Number)",
     };
 
     const handleSubmit = async (e: React.FormEvent) => {

@@ -203,9 +203,57 @@ export default function StudentLearningPage() {
                                 </button>
                             </div>
 
+                            {/* Meeting Link */}
+                            {activeModule?.meetingLink && (
+                                <a
+                                    href={activeModule.meetingLink}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="mb-8 flex items-center gap-3 px-6 py-4 bg-blue-500/10 border border-blue-500/30 rounded-2xl hover:bg-blue-500/20 transition-all group"
+                                >
+                                    <div className="w-10 h-10 rounded-xl bg-blue-500 flex items-center justify-center text-white shadow-lg shadow-blue-500/30 animate-pulse">
+                                        <Video size={20} />
+                                    </div>
+                                    <div>
+                                        <p className="font-robot text-xs uppercase tracking-widest font-bold text-blue-500">Live Session Available</p>
+                                        <p className="font-inter text-[10px] text-foreground/40 group-hover:text-foreground/60 transition-colors">Click to join the live class meeting</p>
+                                    </div>
+                                    <ChevronRight size={20} className="ml-auto text-blue-500 group-hover:translate-x-1 transition-transform" />
+                                </a>
+                            )}
+
                             <div className="font-inter text-base text-foreground/50 leading-relaxed max-w-4xl">
                                 {activeModule?.content || "No detailed dossier provided for this operation. Contact your trainer for specific logistical inquiries."}
                             </div>
+
+                            {/* Resources Section */}
+                            {activeModule?.resources && activeModule.resources.length > 0 && (
+                                <div className="mt-8 pt-8 border-t border-border">
+                                    <h4 className="font-robot text-xs uppercase tracking-widest text-foreground/40 font-bold mb-4 flex items-center gap-2">
+                                        <FileText size={14} className="text-primary" /> Downloadable Resources
+                                    </h4>
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                        {activeModule.resources.map((res, i) => (
+                                            <a
+                                                key={i}
+                                                href={res.url}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="flex items-center gap-4 p-4 bg-foreground/5 rounded-xl border border-border hover:border-primary/50 hover:bg-primary/5 transition-all group"
+                                            >
+                                                <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all">
+                                                    <FileText size={18} />
+                                                </div>
+                                                <div className="flex-1 overflow-hidden">
+                                                    <p className="font-robot text-xs uppercase tracking-widest font-bold text-foreground truncate">{res.name}</p>
+                                                    <p className="font-inter text-[10px] text-foreground/30">Click to download</p>
+                                                </div>
+                                                <LinkIcon size={14} className="text-foreground/20 group-hover:text-primary transition-colors" />
+                                            </a>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
                         </div>
 
                         {/* Attendance Widget */}

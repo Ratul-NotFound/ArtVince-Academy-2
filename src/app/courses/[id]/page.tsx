@@ -3,8 +3,8 @@
 import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { db } from "@/lib/firebase";
-import { doc, getDoc } from "firebase/firestore";
-import { Course } from "@/types";
+import { doc, getDoc, collection, query, where, orderBy, getDocs } from "firebase/firestore";
+import { Course, CourseModule, UserProfile } from "@/types";
 import { useAuth } from "@/context/AuthContext";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -19,7 +19,9 @@ import {
     Loader2,
     ShieldCheck,
     Zap,
-    BookOpen
+    BookOpen,
+    Lock,
+    User
 } from "lucide-react";
 import { motion } from "framer-motion";
 
@@ -28,16 +30,37 @@ export default function CourseDetailsPage() {
     const router = useRouter();
     const { user, profile } = useAuth();
     const [course, setCourse] = useState<Course | null>(null);
+    const [modules, setModules] = useState<CourseModule[]>([]);
+    const [trainer, setTrainer] = useState<UserProfile | null>(null);
     const [loading, setLoading] = useState(true);
     const [isEnrollModalOpen, setIsEnrollModalOpen] = useState(false);
 
     useEffect(() => {
-        const fetchCourse = async () => {
+        const fetchCourseData = async () => {
             if (!id) return;
             try {
+                // Fetch Course
                 const docSnap = await getDoc(doc(db, "courses", id as string));
                 if (docSnap.exists()) {
-                    setCourse({ id: docSnap.id, ...docSnap.data() } as Course);
+                    const courseData = { id: docSnap.id, ...docSnap.data() } as Course;
+                    setCourse(courseData);
+
+                    // Fetch Modules for this course
+                    const qModules = query(
+                        collection(db, "courseModules"),
+                        where("courseId", "==", id),
+                        orderBy("order", "asc")
+                    );
+                    const modulesSnap = await getDocs(qModules);
+                    setModules(modulesSnap.docs.map(doc => ({ id: doc.id, ...doc.data() } as CourseModule)));
+
+                    // Fetch Trainer info if trainerId exists
+                    if (courseData.trainerId) {
+                        const trainerDoc = await getDoc(doc(db, "users", courseData.trainerId));
+                        if (trainerDoc.exists()) {
+                            setTrainer(trainerDoc.data() as UserProfile);
+                        }
+                    }
                 }
             } catch (error) {
                 console.error("Error fetching course:", error);
@@ -45,7 +68,7 @@ export default function CourseDetailsPage() {
                 setLoading(false);
             }
         };
-        fetchCourse();
+        fetchCourseData();
     }, [id]);
 
     const isEnrolled = profile?.enrolledCourses?.includes(id as string);
@@ -202,23 +225,59 @@ export default function CourseDetailsPage() {
                 <div className="container mx-auto px-6">
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-16">
                         <div className="lg:col-span-2 space-y-12">
+                            {/* Trainer Info */}
+                            {trainer && (
+                                <div className="glass p-6 rounded-2xl border border-border flex items-center gap-6">
+                                    <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center overflow-hidden border border-border">
+                                        {trainer.photoURL ? (
+                                            <img src={trainer.photoURL} alt={trainer.displayName || ""} className="w-full h-full object-cover" />
+                                        ) : (
+                                            <User size={28} className="text-primary" />
+                                        )}
+                                    </div>
+                                    <div>
+                                        <p className="font-robot text-[10px] uppercase tracking-widest text-foreground/40 mb-1">Instructor</p>
+                                        <h4 className="font-robot text-lg font-bold uppercase text-foreground">{trainer.displayName || "Academy Trainer"}</h4>
+                                        {trainer.bio && (
+                                            <p className="font-inter text-xs text-foreground/50 mt-1 line-clamp-2">{trainer.bio}</p>
+                                        )}
+                                    </div>
+                                </div>
+                            )}
+
                             <div className="space-y-6">
                                 <h3 className="font-robot text-2xl font-bold uppercase tracking-tight">Curriculum Preview</h3>
                                 <div className="space-y-4">
-                                    {[1, 2, 3, 4].map((i) => (
-                                        <div key={i} className="glass p-6 rounded-2xl border border-border flex items-center justify-between group hover:border-primary/50 transition-all">
-                                            <div className="flex items-center gap-4">
-                                                <div className="w-8 h-8 rounded-lg bg-foreground/5 flex items-center justify-center font-robot text-xs text-foreground/40 font-bold group-hover:bg-primary group-hover:text-white transition-all">
-                                                    0{i}
+                                    {modules.length > 0 ? (
+                                        modules.map((m, i) => (
+                                            <div key={m.id} className="glass p-6 rounded-2xl border border-border flex items-center justify-between group hover:border-primary/50 transition-all">
+                                                <div className="flex items-center gap-4">
+                                                    <div className="w-8 h-8 rounded-lg bg-foreground/5 flex items-center justify-center font-robot text-xs text-foreground/40 font-bold group-hover:bg-primary group-hover:text-white transition-all">
+                                                        {m.order < 10 ? `0${m.order}` : m.order}
+                                                    </div>
+                                                    <span className="font-robot text-sm uppercase tracking-widest text-foreground/70 group-hover:text-foreground transition-all">{m.title}</span>
                                                 </div>
-                                                <span className="font-robot text-sm uppercase tracking-widest text-foreground/70 group-hover:text-foreground transition-all">Module {i}: Fundamental Protocol</span>
+                                                <div className="flex items-center gap-4 text-foreground/20">
+                                                    {isEnrolled ? (
+                                                        <>
+                                                            <span className="font-inter text-xs text-primary">Unlocked</span>
+                                                            <CheckCircle2 size={16} className="text-primary" />
+                                                        </>
+                                                    ) : (
+                                                        <>
+                                                            <span className="font-inter text-xs">Locked</span>
+                                                            <Lock size={16} />
+                                                        </>
+                                                    )}
+                                                </div>
                                             </div>
-                                            <div className="flex items-center gap-4 text-foreground/20">
-                                                <span className="font-inter text-xs">Locked</span>
-                                                <ShieldCheck size={16} />
-                                            </div>
+                                        ))
+                                    ) : (
+                                        <div className="py-12 border-2 border-dashed border-border rounded-2xl flex flex-col items-center justify-center text-center">
+                                            <BookOpen size={32} className="text-foreground/10 mb-4" />
+                                            <p className="font-inter text-sm text-foreground/30 italic">Curriculum is being prepared by the instructor.</p>
                                         </div>
-                                    ))}
+                                    )}
                                 </div>
                             </div>
                         </div>

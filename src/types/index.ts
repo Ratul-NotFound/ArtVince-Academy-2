@@ -89,3 +89,17 @@ export interface UserProgress {
     completedModules: string[]; // Array of CourseModule IDs
     lastAccessedAt: any;
 }
+
+export type NotificationType = "enrollment_approved" | "enrollment_rejected" | "announcement" | "module_added" | "course_update";
+
+export interface Notification {
+    id: string;
+    uid: string;
+    type: NotificationType;
+    title: string;
+    message: string;
+    link?: string;
+    read: boolean;
+    createdAt: any;
+}
+

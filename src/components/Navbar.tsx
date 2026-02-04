@@ -6,6 +6,7 @@ import { Menu, X, User, Sun, Moon, Sparkles, ChevronDown, LogOut } from "lucide-
 import { useState, useEffect, useRef } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { usePathname } from "next/navigation";
+import NotificationDropdown from "./NotificationDropdown";
 
 const navLinks = [
     { name: "Courses", href: "/courses" },
@@ -151,6 +152,7 @@ export default function Navbar() {
                     <div className="flex items-center gap-4">
                         {mounted && user ? (
                             <>
+                                <NotificationDropdown />
                                 <Link
                                     href={isAdmin ? "/admin" : (isTrainer ? "/trainer/courses" : "/dashboard")}
                                     className="flex items-center gap-2 bg-foreground/5 text-foreground px-6 py-2 rounded-full font-robot text-xs uppercase tracking-widest hover:bg-primary hover:text-white transition-all border border-border"

@@ -1,7 +1,17 @@
 "use client";
 
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
-import { onAuthStateChanged, User, signOut, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import {
+    onAuthStateChanged,
+    User,
+    signOut,
+    signInWithPopup,
+    GoogleAuthProvider,
+    createUserWithEmailAndPassword,
+    signInWithEmailAndPassword,
+    sendPasswordResetEmail,
+    updateProfile
+} from "firebase/auth";
 import { auth, db } from "@/lib/firebase";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { UserProfile, UserRole } from "@/types";
@@ -16,6 +26,9 @@ interface AuthContextType {
     isModerator: boolean;
     isAdmin: boolean;
     loginWithGoogle: () => Promise<void>;
+    loginWithEmail: (email: string, password: string) => Promise<void>;
+    registerWithEmail: (email: string, password: string, displayName: string) => Promise<void>;
+    resetPassword: (email: string) => Promise<void>;
     logout: () => Promise<void>;
 }
 
@@ -60,6 +73,32 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         await signInWithPopup(auth, provider);
     };
 
+    const loginWithEmail = async (email: string, password: string) => {
+        await signInWithEmailAndPassword(auth, email, password);
+    };
+
+    const registerWithEmail = async (email: string, password: string, displayName: string) => {
+        const { user } = await createUserWithEmailAndPassword(auth, email, password);
+        await updateProfile(user, { displayName });
+
+        // Create user profile in Firestore
+        const newProfile: UserProfile = {
+            uid: user.uid,
+            email: user.email,
+            displayName: displayName,
+            photoURL: null,
+            role: "user",
+            enrolledCourses: [],
+            createdAt: new Date(),
+        };
+        await setDoc(doc(db, "users", user.uid), newProfile);
+        setProfile(newProfile);
+    };
+
+    const resetPassword = async (email: string) => {
+        await sendPasswordResetEmail(auth, email);
+    };
+
     const logout = async () => {
         await signOut(auth);
     };
@@ -76,6 +115,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         isModerator: userRole === "moderator",
         isAdmin: userRole === "admin",
         loginWithGoogle,
+        loginWithEmail,
+        registerWithEmail,
+        resetPassword,
         logout
     };
 
@@ -93,3 +135,4 @@ export function useAuth() {
     }
     return context;
 }
+
