@@ -7,7 +7,7 @@ import TiltCard from "./TiltCard";
 import ScrollReveal from "./ScrollReveal";
 import { useState, useEffect } from "react";
 import { db } from "@/lib/firebase";
-import { collection, getDocs, query, orderBy, limit } from "firebase/firestore";
+import { collection, getDocs, query, limit } from "firebase/firestore";
 import { Course } from "@/types";
 
 export default function CoursesGrid() {
@@ -17,10 +17,23 @@ export default function CoursesGrid() {
     useEffect(() => {
         const fetchCourses = async () => {
             try {
-                const q = query(collection(db, "courses"), orderBy("createdAt", "desc"), limit(4));
+                // Fetch more items to allow client-side filtering
+                const q = query(collection(db, "courses"), limit(50));
                 const querySnapshot = await getDocs(q);
-                const data = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Course));
-                setCourses(data);
+                let data = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Course));
+
+                // 1. Filter for "Published" status (client-side)
+                data = data.filter(course => course.status === "Published");
+
+                // 2. Sort by createdAt desc
+                data.sort((a: any, b: any) => {
+                    const timeA = a.createdAt?.seconds || 0;
+                    const timeB = b.createdAt?.seconds || 0;
+                    return timeB - timeA;
+                });
+
+                // 3. Take top 4
+                setCourses(data.slice(0, 4));
             } catch (error) {
                 console.error("Error fetching courses:", error);
             } finally {

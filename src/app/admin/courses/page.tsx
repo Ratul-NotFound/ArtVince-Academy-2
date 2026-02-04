@@ -6,10 +6,49 @@ import { useState, useEffect, useMemo } from "react";
 import { db } from "@/lib/firebase";
 import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc, query, orderBy, where } from "firebase/firestore";
 import { Course, UserProfile } from "@/types";
-import { Plus, Edit2, Trash2, ExternalLink, Loader2, BookOpen, Search, X, Users, DollarSign, ChevronDown, Eye, Settings } from "lucide-react";
+import { Plus, Edit2, Trash2, ExternalLink, Loader2, BookOpen, Search, X, Users, DollarSign, ChevronDown, Eye, Settings, RefreshCw } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import Portal from "@/components/Portal";
+
+const DEFAULT_COURSES = [
+    {
+        title: "Digital Concept Art",
+        description: "Learn to paint breathtaking landscapes and characters for film and games using industry-standard techniques.",
+        price: 89,
+        category: "Concept Art",
+        duration: "8 Weeks",
+        difficulty: "Beginner",
+        thumbnail: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?q=80&w=2070&auto=format&fit=crop",
+        status: "Published",
+        enrolledCount: 142,
+        createdAt: new Date(),
+    },
+    {
+        title: "AAA Character Sculpting",
+        description: "Master anatomy and sculpting techniques to create hyper-realistic game characters from scratch.",
+        price: 129,
+        category: "Game Dev",
+        duration: "12 Weeks",
+        difficulty: "Advanced",
+        thumbnail: "https://images.unsplash.com/photo-1615184697985-c9bde1b07da7?q=80&w=2070&auto=format&fit=crop",
+        status: "Published",
+        enrolledCount: 256,
+        createdAt: new Date(),
+    },
+    {
+        title: "Cinematic Environment Design",
+        description: "Create immersive worlds and atmospheric scenes using Unreal Engine 5 and advanced lighting.",
+        price: 109,
+        category: "Animation",
+        duration: "10 Weeks",
+        difficulty: "Intermediate",
+        thumbnail: "https://images.unsplash.com/photo-1547394765-185e1e68f34e?q=80&w=2070&auto=format&fit=crop",
+        status: "Published",
+        enrolledCount: 98,
+        createdAt: new Date(),
+    }
+];
 
 export default function AdminCoursesPage() {
     const [courses, setCourses] = useState<Course[]>([]);
@@ -96,6 +135,25 @@ export default function AdminCoursesPage() {
         }
     };
 
+    const handleSeed = async () => {
+        if (confirm("This will add 4 demo courses to the database. Continue?")) {
+            setLoading(true);
+            try {
+                for (const course of DEFAULT_COURSES) {
+                    await addDoc(collection(db, "courses"), {
+                        ...course,
+                        trainerId: trainers[0]?.uid || "system", // Fallback to first trainer or system
+                    });
+                }
+                await fetchCourses();
+            } catch (error) {
+                console.error("Error seeding courses:", error);
+            } finally {
+                setLoading(false);
+            }
+        }
+    };
+
     const openCreateModal = () => {
         setEditingCourse(null);
         setFormData({ title: "", description: "", price: 0, category: "Concept Art", duration: "", difficulty: "Beginner", thumbnail: "", trainerId: "", status: "Published" });
@@ -136,7 +194,7 @@ export default function AdminCoursesPage() {
     }), [courses]);
 
     return (
-        <RoleGuard allowedRoles={["admin"]}>
+        <RoleGuard allowedRoles={["admin", "moderator"]}>
             <DashboardLayout>
                 {/* Header */}
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
@@ -148,13 +206,22 @@ export default function AdminCoursesPage() {
                             Manage Academy Curriculum
                         </p>
                     </div>
-                    <button
-                        onClick={openCreateModal}
-                        className="flex items-center gap-2 bg-primary text-white px-6 py-3 rounded-xl font-robot text-xs uppercase tracking-widest hover:bg-foreground hover:text-background transition-all shadow-lg shadow-primary/20"
-                    >
-                        <Plus size={16} />
-                        New Course
-                    </button>
+                    <div className="flex gap-4">
+                        <button
+                            onClick={handleSeed}
+                            className="flex items-center gap-2 bg-secondary/10 text-secondary px-6 py-3 rounded-xl font-robot text-xs uppercase tracking-widest hover:bg-secondary/20 transition-all"
+                        >
+                            <RefreshCw size={16} />
+                            Seed Defaults
+                        </button>
+                        <button
+                            onClick={openCreateModal}
+                            className="flex items-center gap-2 bg-primary text-white px-6 py-3 rounded-xl font-robot text-xs uppercase tracking-widest hover:bg-foreground hover:text-background transition-all shadow-lg shadow-primary/20"
+                        >
+                            <Plus size={16} />
+                            New Course
+                        </button>
+                    </div>
                 </div>
 
                 {/* Stats Row */}

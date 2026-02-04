@@ -3,6 +3,7 @@
 import { motion, useScroll, useTransform, useSpring, useMotionValue, AnimatePresence } from "framer-motion";
 import { useRef, useEffect, useState } from "react";
 import ScrollReveal from "./ScrollReveal";
+import Image from "next/image";
 
 // Hero background images - curated for 3D art & gaming industry
 const heroImages = [
@@ -113,12 +114,16 @@ export default function Hero() {
                             initial="enter"
                             animate="center"
                             exit="exit"
-                            className="absolute inset-0 bg-cover bg-center grayscale mix-blend-overlay"
-                            style={{
-                                backgroundImage: mounted ? `url('${heroImages[currentImageIndex]}')` : `url('${heroImages[0]}')`,
-                            }}
-                            suppressHydrationWarning
-                        />
+                            className="absolute inset-0"
+                        >
+                            <Image
+                                src={heroImages[currentImageIndex]}
+                                alt="Hero Background"
+                                fill
+                                className="object-cover object-center grayscale mix-blend-overlay"
+                                priority
+                            />
+                        </motion.div>
                     </AnimatePresence>
                 </div>
 

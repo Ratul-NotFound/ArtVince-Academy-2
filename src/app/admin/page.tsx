@@ -21,7 +21,8 @@ import {
     ChevronRight,
     Activity,
     Shield,
-    AlertTriangle
+    AlertTriangle,
+    Image as ImageIcon
 } from "lucide-react";
 
 interface DashboardStats {
@@ -185,7 +186,7 @@ export default function AdminDashboardPage() {
                     <QuickAction href="/admin/courses" icon={<BookOpen size={18} />} label="Manage Courses" />
                     <QuickAction href="/admin/users" icon={<Users size={18} />} label="User Control" />
                     <QuickAction href="/admin/enrollments" icon={<CheckCircle2 size={18} />} label="Verify Payments" />
-                    <QuickAction href="/admin/revenue" icon={<TrendingUp size={18} />} label="Revenue Report" />
+                    <QuickAction href="/admin/showcase" icon={<ImageIcon size={18} />} label="Student Showcase" />
                 </div>
 
                 {/* Main Content Grid */}
@@ -209,8 +210,8 @@ export default function AdminDashboardPage() {
                                 stats.recentEnrollments.map((e) => (
                                     <div key={e.id} className="p-4 hover:bg-foreground/[0.02] transition-colors flex items-center gap-4">
                                         <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${e.status === "approved" ? "bg-emerald-500/10 text-emerald-500" :
-                                                e.status === "rejected" ? "bg-red-500/10 text-red-500" :
-                                                    "bg-amber-500/10 text-amber-500"
+                                            e.status === "rejected" ? "bg-red-500/10 text-red-500" :
+                                                "bg-amber-500/10 text-amber-500"
                                             }`}>
                                             {e.status === "approved" ? <CheckCircle2 size={18} /> :
                                                 e.status === "rejected" ? <XCircle size={18} /> :
@@ -260,9 +261,9 @@ export default function AdminDashboardPage() {
                                             <p className="font-inter text-[10px] text-foreground/40 truncate">{u.email}</p>
                                         </div>
                                         <div className={`px-2 py-1 rounded-full font-robot text-[8px] uppercase font-bold ${u.role === "admin" ? "bg-red-500/10 text-red-500" :
-                                                u.role === "trainer" ? "bg-cyan-500/10 text-cyan-500" :
-                                                    u.role === "moderator" ? "bg-purple-500/10 text-purple-500" :
-                                                        "bg-foreground/10 text-foreground/40"
+                                            u.role === "trainer" ? "bg-cyan-500/10 text-cyan-500" :
+                                                u.role === "moderator" ? "bg-purple-500/10 text-purple-500" :
+                                                    "bg-foreground/10 text-foreground/40"
                                             }`}>
                                             <Shield size={8} className="inline mr-1" />
                                             {u.role}

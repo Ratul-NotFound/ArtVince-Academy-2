@@ -24,7 +24,13 @@ service cloud.firestore {
     // Courses
     match /courses/{courseId} {
       allow read: if true; // Publicly browsable
-      allow write: if hasRole('admin');
+      allow write: if hasRole('admin') || hasRole('moderator');
+    }
+
+    // Student Showcase
+    match /showcase/{showcaseId} {
+      allow read: if true;
+      allow write: if hasRole('admin') || hasRole('moderator');
     }
 
     // Course Modules
