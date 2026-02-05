@@ -27,16 +27,20 @@ export default function CoursesGrid() {
                 data = data.filter(course => !course.status || course.status === "Published");
 
                 // 2. Get actual enrollment counts from enrollments collection
-                const enrollmentsSnapshot = await getDocs(collection(db, "enrollments"));
                 const enrollmentCounts: { [key: string]: number } = {};
-
-                enrollmentsSnapshot.docs.forEach(doc => {
-                    const enrollment = doc.data();
-                    const courseId = enrollment.courseId;
-                    if (courseId) {
-                        enrollmentCounts[courseId] = (enrollmentCounts[courseId] || 0) + 1;
-                    }
-                });
+                try {
+                    const enrollmentsSnapshot = await getDocs(collection(db, "enrollments"));
+                    enrollmentsSnapshot.docs.forEach(doc => {
+                        const enrollment = doc.data();
+                        const courseId = enrollment.courseId;
+                        if (courseId) {
+                            enrollmentCounts[courseId] = (enrollmentCounts[courseId] || 0) + 1;
+                        }
+                    });
+                } catch (enrollError) {
+                    console.warn("Enrollment counts restricted by security rules:", enrollError);
+                    // Continue without counts
+                }
 
                 // 3. Add real enrollment counts to courses
                 data = data.map(course => ({
@@ -54,8 +58,16 @@ export default function CoursesGrid() {
                 // 5. Take top 4
                 setCourses(data.slice(0, 4));
             } catch (err: any) {
-                console.error("Error fetching courses:", err);
-                setError(err.message || "Failed to fetch courses. Please check your connection.");
+                console.error("🔥 Firestore Course Fetch Error:", err);
+                let customError = "Failed to fetch courses.";
+
+                if (err.message?.includes("permission")) {
+                    customError = "Access Denied: Please check your Firestore Security Rules and ensure your Project ID in Vercel matches your Firebase Console.";
+                } else if (!process.env.NEXT_PUBLIC_FIREBASE_API_KEY || process.env.NEXT_PUBLIC_FIREBASE_API_KEY === "dummy-api-key") {
+                    customError = "Configuration Error: Firebase Environment Variables are missing in Vercel.";
+                }
+
+                setError(customError);
             } finally {
                 setLoading(false);
             }
