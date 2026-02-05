@@ -12,6 +12,7 @@ export const metadata: Metadata = {
 import SmoothScroll from "@/components/SmoothScroll";
 import Navbar from "@/components/Navbar";
 import CustomCursor from "@/components/CustomCursor";
+import HydrationFix from "@/components/HydrationFix";
 
 export default function RootLayout({
   children,

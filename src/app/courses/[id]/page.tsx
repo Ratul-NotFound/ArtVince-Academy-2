@@ -42,7 +42,16 @@ export default function CourseDetailsPage() {
                 // Fetch Course
                 const docSnap = await getDoc(doc(db, "courses", id as string));
                 if (docSnap.exists()) {
-                    const courseData = { id: docSnap.id, ...docSnap.data() } as Course;
+                    let courseData = { id: docSnap.id, ...docSnap.data() } as Course;
+
+                    // Get REAL enrollment count from enrollments collection
+                    const enrollmentsQuery = query(
+                        collection(db, "enrollments"),
+                        where("courseId", "==", id)
+                    );
+                    const enrollmentsSnap = await getDocs(enrollmentsQuery);
+                    courseData.enrolledCount = enrollmentsSnap.size; // Real count
+
                     setCourse(courseData);
 
                     // Fetch Modules for this course

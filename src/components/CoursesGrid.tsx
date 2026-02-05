@@ -22,17 +22,35 @@ export default function CoursesGrid() {
                 const querySnapshot = await getDocs(q);
                 let data = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Course));
 
-                // 1. Filter for "Published" status (client-side)
-                data = data.filter(course => course.status === "Published");
+                // 1. Filter for "Published" status OR courses without status field (client-side)
+                data = data.filter(course => !course.status || course.status === "Published");
 
-                // 2. Sort by createdAt desc
+                // 2. Get actual enrollment counts from enrollments collection
+                const enrollmentsSnapshot = await getDocs(collection(db, "enrollments"));
+                const enrollmentCounts: { [key: string]: number } = {};
+
+                enrollmentsSnapshot.docs.forEach(doc => {
+                    const enrollment = doc.data();
+                    const courseId = enrollment.courseId;
+                    if (courseId) {
+                        enrollmentCounts[courseId] = (enrollmentCounts[courseId] || 0) + 1;
+                    }
+                });
+
+                // 3. Add real enrollment counts to courses
+                data = data.map(course => ({
+                    ...course,
+                    enrolledCount: enrollmentCounts[course.id] || 0
+                }));
+
+                // 4. Sort by createdAt desc
                 data.sort((a: any, b: any) => {
                     const timeA = a.createdAt?.seconds || 0;
                     const timeB = b.createdAt?.seconds || 0;
                     return timeB - timeA;
                 });
 
-                // 3. Take top 4
+                // 5. Take top 4
                 setCourses(data.slice(0, 4));
             } catch (error) {
                 console.error("Error fetching courses:", error);

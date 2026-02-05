@@ -59,6 +59,9 @@ export default function TiltCard({ children, className = "" }: TiltCardProps) {
                 style={{
                     transform: "translateZ(50px)",
                     transformStyle: "preserve-3d",
+                    position: "relative",
+                    width: "100%",
+                    height: "100%",
                 }}
             >
                 {children}

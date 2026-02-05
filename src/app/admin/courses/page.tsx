@@ -21,7 +21,6 @@ const DEFAULT_COURSES = [
         difficulty: "Beginner",
         thumbnail: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?q=80&w=2070&auto=format&fit=crop",
         status: "Published",
-        enrolledCount: 142,
         createdAt: new Date(),
     },
     {
@@ -33,7 +32,6 @@ const DEFAULT_COURSES = [
         difficulty: "Advanced",
         thumbnail: "https://images.unsplash.com/photo-1635805737707-575885ab0820?q=80&w=2070&auto=format&fit=crop",
         status: "Published",
-        enrolledCount: 256,
         createdAt: new Date(),
     },
     {
@@ -45,7 +43,6 @@ const DEFAULT_COURSES = [
         difficulty: "Intermediate",
         thumbnail: "https://images.unsplash.com/photo-1547394765-185e1e68f34e?q=80&w=2070&auto=format&fit=crop",
         status: "Published",
-        enrolledCount: 98,
         createdAt: new Date(),
     }
 ];
@@ -82,7 +79,26 @@ export default function AdminCoursesPage() {
         try {
             const q = query(collection(db, "courses"), orderBy("createdAt", "desc"));
             const querySnapshot = await getDocs(q);
-            const data = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Course));
+            let data = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Course));
+
+            // Get actual enrollment counts from enrollments collection
+            const enrollmentsSnapshot = await getDocs(collection(db, "enrollments"));
+            const enrollmentCounts: { [key: string]: number } = {};
+
+            enrollmentsSnapshot.docs.forEach(doc => {
+                const enrollment = doc.data();
+                const courseId = enrollment.courseId;
+                if (courseId) {
+                    enrollmentCounts[courseId] = (enrollmentCounts[courseId] || 0) + 1;
+                }
+            });
+
+            // Add real enrollment counts to courses
+            data = data.map(course => ({
+                ...course,
+                enrolledCount: enrollmentCounts[course.id] || 0
+            }));
+
             setCourses(data);
         } catch (error) {
             console.error("Error fetching courses:", error);
