@@ -83,7 +83,8 @@ function LoginContent() {
         try {
             await loginWithGoogle();
         } catch (err: any) {
-            setError("Google sign-in failed. Please try again.");
+            console.error("Login Page - Google Error:", err);
+            setError(err.message || "Google sign-in failed. Please try again.");
         } finally {
             setLoading(false);
         }

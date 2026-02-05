@@ -69,8 +69,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }, []);
 
     const loginWithGoogle = async () => {
-        const provider = new GoogleAuthProvider();
-        await signInWithPopup(auth, provider);
+        try {
+            const provider = new GoogleAuthProvider();
+            await signInWithPopup(auth, provider);
+        } catch (error: any) {
+            console.error("🔥 Google Sign-In Error:", error);
+            throw error; // Let the UI handle the generic message, but log the specifics
+        }
     };
 
     const loginWithEmail = async (email: string, password: string) => {
