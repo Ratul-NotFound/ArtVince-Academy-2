@@ -5,13 +5,13 @@ import { useRef, useEffect, useState } from "react";
 import ScrollReveal from "./ScrollReveal";
 import Image from "next/image";
 
-// Hero background images - curated for 3D art & gaming industry
+// Hero background images - ultra-realistic 3D art & gaming visuals
 const heroImages = [
-    "https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?q=80&w=2070&auto=format&fit=crop", // AAA Character Sculpting
-    "https://images.unsplash.com/photo-1614294149010-950b698f72c0?q=80&w=2070&auto=format&fit=crop", // Technical Topology
-    "https://images.unsplash.com/photo-1547394765-185e1e68f34e?q=80&w=2070&auto=format&fit=crop", // Unreal Engine Environment
-    "https://images.unsplash.com/photo-1509248961158-e54f6934749c?q=80&w=2074&auto=format&fit=crop", // Hollywood Cinematic Rendering
-    "https://images.unsplash.com/photo-1635805737707-575885ab0820?q=80&w=2070&auto=format&fit=crop", // Character Render (Spider-Man Style)
+    "/images/hero-sculpt.png",      // ZBrush Digital Sculpting Workstation
+    "/images/hero-character.png",   // Cyberpunk Sci-Fi Soldier
+    "/images/hero-environment.png", // UE5 Fantasy Temple Environment
+    "/images/hero-creature.png",    // Epic Dragon Creature
+    "/images/hero-warrior.png",     // Medieval Knight at Sunset
 ];
 
 export default function Hero() {
@@ -76,7 +76,7 @@ export default function Hero() {
             filter: "blur(20px)",
         },
         center: {
-            opacity: 0.4,
+            opacity: 0.8,
             scale: 1,
             filter: "blur(0px)",
             transition: {
@@ -120,8 +120,9 @@ export default function Hero() {
                                 src={heroImages[currentImageIndex]}
                                 alt="Hero Background"
                                 fill
-                                className="object-cover object-center mix-blend-overlay"
+                                className="object-cover object-top"
                                 priority
+                                sizes="100vw"
                             />
                         </motion.div>
                     </AnimatePresence>
@@ -141,7 +142,7 @@ export default function Hero() {
                     ))}
                 </div>
 
-                <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/60 to-background" suppressHydrationWarning />
+                <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/40 to-background" suppressHydrationWarning />
             </motion.div>
 
             {/* Content */}

@@ -13,7 +13,7 @@ const phases = [
         description: "Master organic & hard-surface sculpting in ZBrush. Understand primary shapes & silhouettes.",
         color: "from-blue-500 to-cyan-500",
         tech: "SCULPTING",
-        image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?q=80&w=2070&auto=format&fit=crop", // Sculpting
+        image: "/images/pipeline-sculpting.png", // ZBrush Character Sculpt
     },
     {
         id: "02",
@@ -22,7 +22,7 @@ const phases = [
         description: "Convert high-poly sculpts into game-ready geometry. Master baking & UV mapping.",
         color: "from-purple-500 to-pink-500",
         tech: "RETOPOLOGY",
-        image: "https://images.unsplash.com/photo-1614294149010-950b698f72c0?q=80&w=2070&auto=format&fit=crop", // Technical Topology
+        image: "/images/pipeline-retopology.png", // Retopology Wireframe
     },
     {
         id: "03",
@@ -31,7 +31,7 @@ const phases = [
         description: "Bring models to life with Substance Painter. Master photorealistic metal & skin shaders.",
         color: "from-emerald-500 to-teal-500",
         tech: "PBR TEXTURING",
-        image: "https://images.unsplash.com/photo-1633545505416-86d382d68961?q=80&w=2070&auto=format&fit=crop", // Material Detail
+        image: "/images/pipeline-texturing.png", // Substance Painter Armor
     },
     {
         id: "04",
@@ -40,7 +40,7 @@ const phases = [
         description: "Final presentation in Unreal Engine 5. Master cinematic lighting & VFX integration.",
         color: "from-primary to-orange-500",
         tech: "RENDERING",
-        image: "https://images.unsplash.com/photo-1547394765-185e1e68f34e?q=80&w=2070&auto=format&fit=crop", // UE5 Rendering
+        image: "/images/pipeline-rendering.png", // UE5 Cinematic Render
     },
 ];
 
