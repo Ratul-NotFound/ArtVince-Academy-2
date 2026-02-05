@@ -3,11 +3,13 @@
 import { motion } from "framer-motion";
 import CoursesGrid from "@/components/CoursesGrid";
 import Footer from "@/components/Footer";
+import Navbar from "@/components/Navbar";
 
 export default function CoursesPage() {
     return (
-        <div className="bg-background min-h-screen pt-32 text-foreground transition-colors duration-300">
-            <div className="container mx-auto px-6 mb-20">
+        <div className="bg-background min-h-screen text-foreground transition-colors duration-300">
+            <Navbar />
+            <div className="container mx-auto px-6 mb-20 pt-32">
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}

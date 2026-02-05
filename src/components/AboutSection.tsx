@@ -32,16 +32,16 @@ export default function AboutSection() {
                     <ScrollReveal direction="left" rotateX={20} rotateY={20} distance={50}>
                         <div className="relative aspect-square rounded-3xl overflow-hidden border border-border group bg-background shadow-2xl" suppressHydrationWarning>
                             <img
-                                src="https://images.unsplash.com/photo-1614850523296-d8c1af93d400?q=80&w=2070&auto=format&fit=crop"
+                                src="/images/about-render.png"
                                 alt="Industry Standard 3D Render"
-                                className="w-full h-full object-cover grayscale brightness-50 group-hover:grayscale-0 group-hover:brightness-100 transition-all duration-700 scale-110 group-hover:scale-100"
+                                className="w-full h-full object-cover grayscale-[0.5] brightness-75 group-hover:grayscale-0 group-hover:brightness-110 transition-all duration-700 scale-110 group-hover:scale-100"
                             />
                             <div className="absolute inset-0 flex items-center justify-center pointer-events-none" suppressHydrationWarning>
                                 <motion.div style={{ rotate }}>
-                                    <h2 className="font-robot text-8xl font-black text-white/5 tracking-tighter uppercase select-none">CREATIVE</h2>
+                                    <h2 className="font-robot text-8xl font-black text-white/10 tracking-tighter uppercase select-none">CREATIVE</h2>
                                 </motion.div>
                             </div>
-                            <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-background to-transparent opacity-60 pointer-events-none" suppressHydrationWarning />
+                            <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-background to-transparent opacity-80 pointer-events-none" suppressHydrationWarning />
                         </div>
                     </ScrollReveal>
                 </motion.div>

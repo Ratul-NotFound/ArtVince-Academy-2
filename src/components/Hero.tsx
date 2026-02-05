@@ -151,6 +151,7 @@ export default function Hero() {
                     <motion.div
                         style={{ opacity: contentOpacity, scale: contentScale, y: combinedContentY, x: headlineX }}
                         className="transform-gpu"
+                        suppressHydrationWarning
                     >
                         <span className="font-handwritten text-5xl text-primary mb-6 block animate-pulse drop-shadow-[0_0_15px_rgba(var(--primary-rgb),0.5)]">
                             Master the Art of 3D Creation

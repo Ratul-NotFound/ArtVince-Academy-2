@@ -93,7 +93,7 @@ export default function Navbar() {
                 </Link>
 
                 {/* Desktop Nav */}
-                <div className="hidden md:flex items-center gap-8">
+                <div className="hidden md:flex items-center gap-8" suppressHydrationWarning>
                     {navLinks.map((link) => (
                         <Link
                             key={link.name}

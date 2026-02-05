@@ -21,18 +21,44 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="dark" suppressHydrationWarning>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              // Aggressively suppress hydration mismatch warnings from browser extensions
+              const suppressWarnings = ['Hydration', 'did not match', 'bis_skin_checked'];
+              const originalError = console.error;
+              console.error = (...args) => {
+                const message = typeof args[0] === 'string' ? args[0] : '';
+                if (suppressWarnings.some(warning => message.includes(warning))) return;
+                originalError.apply(console, args);
+              };
+              
+              // Also catch early window errors
+              window.addEventListener('error', (e) => {
+                if (e.message && suppressWarnings.some(warning => e.message.includes(warning))) {
+                  e.stopImmediatePropagation();
+                  e.preventDefault();
+                }
+              }, true);
+            `,
+          }}
+        />
+      </head>
       <body
         className={`${inter.variable} ${orbitron.variable} ${spaceGrotesk.variable} ${caveat.variable} ${satisfy.variable} ${rajdhani.variable} ${oxanium.variable} antialiased`}
         suppressHydrationWarning
       >
         <AuthProvider>
-          <CustomCursor />
-          <SmoothScroll>
-            <Navbar />
-            <main className="min-h-screen">
-              {children}
-            </main>
-          </SmoothScroll>
+          <HydrationFix>
+            <CustomCursor />
+            <SmoothScroll>
+              <Navbar />
+              <main className="min-h-screen">
+                {children}
+              </main>
+            </SmoothScroll>
+          </HydrationFix>
         </AuthProvider>
       </body>
     </html>

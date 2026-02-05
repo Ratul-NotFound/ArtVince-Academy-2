@@ -13,6 +13,7 @@ import { Course } from "@/types";
 export default function CoursesGrid() {
     const [courses, setCourses] = useState<Course[]>([]);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
         const fetchCourses = async () => {
@@ -52,8 +53,9 @@ export default function CoursesGrid() {
 
                 // 5. Take top 4
                 setCourses(data.slice(0, 4));
-            } catch (error) {
-                console.error("Error fetching courses:", error);
+            } catch (err: any) {
+                console.error("Error fetching courses:", err);
+                setError(err.message || "Failed to fetch courses. Please check your connection.");
             } finally {
                 setLoading(false);
             }
@@ -81,6 +83,14 @@ export default function CoursesGrid() {
                 {loading ? (
                     <div className="flex items-center justify-center py-20 text-primary" suppressHydrationWarning>
                         <Loader2 className="animate-spin" size={40} />
+                    </div>
+                ) : error ? (
+                    <div className="text-center py-20 text-foreground/50 font-robot uppercase tracking-widest text-sm" suppressHydrationWarning>
+                        {error}
+                    </div>
+                ) : courses.length === 0 ? (
+                    <div className="text-center py-20 text-foreground/50 font-robot uppercase tracking-widest text-sm" suppressHydrationWarning>
+                        No active courses available at the moment.
                     </div>
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8" suppressHydrationWarning>
