@@ -4,6 +4,7 @@ import { motion, useScroll, useTransform, useSpring, useMotionValue, AnimatePres
 import { useRef, useEffect, useState } from "react";
 import ScrollReveal from "./ScrollReveal";
 import Image from "next/image";
+import Link from "next/link";
 
 // Hero background images - ultra-realistic 3D art & gaming visuals
 const heroImages = [
@@ -128,19 +129,7 @@ export default function Hero() {
                     </AnimatePresence>
                 </div>
 
-                {/* Image Progress Indicators */}
-                <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-20 flex gap-2">
-                    {heroImages.map((_, index) => (
-                        <button
-                            key={index}
-                            onClick={() => setCurrentImageIndex(index)}
-                            className={`h-1 rounded-full transition-all duration-500 ${index === currentImageIndex
-                                ? "w-8 bg-primary"
-                                : "w-2 bg-white/20 hover:bg-white/40"
-                                }`}
-                        />
-                    ))}
-                </div>
+
 
                 <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/40 to-background" suppressHydrationWarning />
             </motion.div>
@@ -185,24 +174,42 @@ export default function Hero() {
                             transition={{ delay: 1 }}
                             className="flex flex-col md:flex-row items-center justify-center gap-8 mt-16"
                         >
-                            <motion.button
-                                whileHover={{ scale: 1.05 }}
-                                whileTap={{ scale: 0.95 }}
-                                className="bg-primary text-white px-12 py-5 rounded-xl font-robot font-bold uppercase tracking-widest hover:bg-foreground hover:text-background transition-all group overflow-hidden relative shadow-[0_0_30px_rgba(var(--primary-rgb),0.3)] hover:shadow-[0_0_50px_rgba(var(--primary-rgb),0.5)]"
-                            >
-                                <span className="relative z-10">Start Learning</span>
-                                <motion.div
-                                    className="absolute inset-0 bg-foreground translate-y-full group-hover:translate-y-0 transition-transform duration-500"
-                                />
-                            </motion.button>
-                            <motion.button
-                                whileHover={{ scale: 1.05, borderColor: "rgba(var(--primary-rgb),1)" }}
-                                whileTap={{ scale: 0.95 }}
-                                className="border border-foreground/20 glass px-12 py-5 rounded-xl font-robot font-bold uppercase tracking-widest hover:text-primary transition-all backdrop-blur-md"
-                            >
-                                View Courses
-                            </motion.button>
+                            <Link href="/courses">
+                                <motion.button
+                                    whileHover={{ scale: 1.05 }}
+                                    whileTap={{ scale: 0.95 }}
+                                    className="bg-primary text-white px-12 py-5 rounded-xl font-robot font-bold uppercase tracking-widest hover:bg-foreground hover:text-background transition-all group overflow-hidden relative shadow-[0_0_30px_rgba(var(--primary-rgb),0.3)] hover:shadow-[0_0_50px_rgba(var(--primary-rgb),0.5)]"
+                                >
+                                    <span className="relative z-10">Start Learning</span>
+                                    <motion.div
+                                        className="absolute inset-0 bg-foreground translate-y-full group-hover:translate-y-0 transition-transform duration-500"
+                                    />
+                                </motion.button>
+                            </Link>
+                            <Link href="/courses">
+                                <motion.button
+                                    whileHover={{ scale: 1.05, borderColor: "rgba(var(--primary-rgb),1)" }}
+                                    whileTap={{ scale: 0.95 }}
+                                    className="border border-foreground/20 glass px-12 py-5 rounded-xl font-robot font-bold uppercase tracking-widest hover:text-primary transition-all backdrop-blur-md"
+                                >
+                                    View Courses
+                                </motion.button>
+                            </Link>
                         </motion.div>
+
+                        {/* Image Progress Indicators - Moved into content to avoid z-index blocking */}
+                        <div className="flex justify-center gap-2 mt-20" suppressHydrationWarning>
+                            {heroImages.map((_, index) => (
+                                <button
+                                    key={index}
+                                    onClick={() => setCurrentImageIndex(index)}
+                                    className={`h-1 rounded-full transition-all duration-500 ${index === currentImageIndex
+                                        ? "w-8 bg-primary"
+                                        : "w-2 bg-white/20 hover:bg-white/40"
+                                        }`}
+                                />
+                            ))}
+                        </div>
                     </motion.div>
                 </ScrollReveal>
             </div>
