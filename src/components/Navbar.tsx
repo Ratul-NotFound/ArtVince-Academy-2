@@ -84,8 +84,8 @@ export default function Navbar() {
         >
             <div className="container mx-auto px-6 flex justify-between items-center" suppressHydrationWarning>
                 <Link href="/" className="flex items-center gap-2">
-                    <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center font-robot font-bold text-xl skew-x-12" suppressHydrationWarning>
-                        A
+                    <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center skew-x-12 overflow-hidden border border-primary/20" suppressHydrationWarning>
+                        <img src="/favicon.png" alt="Artvince Logo" className="w-8 h-8 object-contain -skew-x-12" />
                     </div>
                     <span className="font-robot text-2xl font-bold tracking-tighter uppercase text-foreground">
                         Artvince <span className="text-primary">Academy</span>

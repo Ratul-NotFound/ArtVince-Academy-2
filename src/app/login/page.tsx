@@ -101,8 +101,8 @@ function LoginContent() {
                 animate={{ opacity: 1, scale: 1 }}
                 className="glass p-12 rounded-[2rem] border border-border w-full max-w-md relative z-10"
             >
-                <Link href="/" className="block w-20 h-20 bg-primary mx-auto rounded-2xl flex items-center justify-center font-robot font-bold text-4xl mb-8 skew-x-12 rotate-6 text-white hover:scale-110 transition-transform">
-                    A
+                <Link href="/" className="block w-20 h-20 bg-primary/10 mx-auto rounded-2xl flex items-center justify-center skew-x-12 rotate-6 hover:scale-110 transition-transform overflow-hidden border border-primary/20">
+                    <img src="/favicon.png" alt="Artvince Logo" className="w-12 h-12 object-contain -skew-x-12" />
                 </Link>
 
                 <h1 className="font-robot text-3xl font-bold uppercase tracking-tighter mb-2 text-foreground text-center">

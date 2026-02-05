@@ -10,8 +10,8 @@ export default function Footer() {
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-20" suppressHydrationWarning>
                     <div className="col-span-1 md:col-span-2" suppressHydrationWarning>
                         <Link href="/" className="flex items-center gap-2 mb-8">
-                            <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center font-robot font-bold text-lg skew-x-12" suppressHydrationWarning>
-                                A
+                            <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center skew-x-12 overflow-hidden border border-primary/20" suppressHydrationWarning>
+                                <img src="/favicon.png" alt="Artvince Logo" className="w-6 h-6 object-contain -skew-x-12" />
                             </div>
                             <span className="font-robot text-xl font-bold tracking-tighter uppercase">
                                 Artvince <span className="text-primary">Academy</span>
