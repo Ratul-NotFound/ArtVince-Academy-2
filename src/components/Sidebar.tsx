@@ -17,7 +17,8 @@ import {
     Megaphone,
     Search,
     DollarSign,
-    Globe
+    Globe,
+    MessageSquare
 } from "lucide-react";
 import { motion } from "framer-motion";
 
@@ -40,6 +41,7 @@ export default function Sidebar() {
                     { name: "User Manifest", href: "/admin/users", icon: Users },
                     { name: "Financial Terminal", href: "/admin/enrollments", icon: CreditCard },
                     { name: "Fiscal Intelligence", href: "/admin/revenue", icon: DollarSign },
+                    { name: "Support Inbox", href: "/admin/messages", icon: MessageSquare },
                 ];
             case "moderator":
                 return [
@@ -47,6 +49,7 @@ export default function Sidebar() {
                     { name: "Verify Payments", href: "/admin/enrollments", icon: CreditCard },
                     { name: "Syllabus Audit", href: "/trainer/courses", icon: BookOpen },
                     { name: "Broadcast Terminal", href: "/trainer/announcements", icon: Megaphone },
+                    { name: "Support Inbox", href: "/admin/messages", icon: MessageSquare },
                 ];
             case "trainer":
                 return [
@@ -54,6 +57,7 @@ export default function Sidebar() {
                     { name: "Assigned Sectors", href: "/trainer/courses", icon: BookOpen },
                     { name: "Attendance Log", href: "/trainer/attendance", icon: ClipboardList },
                     { name: "Broadcast Terminal", href: "/trainer/announcements", icon: Megaphone },
+                    { name: "Student Messages", href: "/admin/messages", icon: MessageSquare },
                 ];
             case "user":
             default:
@@ -62,6 +66,7 @@ export default function Sidebar() {
                     { name: "Learning Panel", href: "/dashboard/courses", icon: BookOpen },
                     { name: "Academic Archives", href: "/dashboard/enrollments", icon: CreditCard },
                     { name: "Browse Academy", href: "/courses", icon: Search },
+                    { name: "Messages", href: "/dashboard/messages", icon: MessageSquare },
                 ];
         }
     };

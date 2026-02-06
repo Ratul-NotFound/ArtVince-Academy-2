@@ -90,7 +90,7 @@ export interface UserProgress {
     lastAccessedAt: any;
 }
 
-export type NotificationType = "enrollment_approved" | "enrollment_rejected" | "announcement" | "module_added" | "course_update";
+export type NotificationType = "enrollment_approved" | "enrollment_rejected" | "announcement" | "module_added" | "course_update" | "message";
 
 export interface Notification {
     id: string;
@@ -103,3 +103,38 @@ export interface Notification {
     createdAt: any;
 }
 
+// ============== MESSAGING SYSTEM ==============
+
+export type ConversationType = "general" | "course";
+export type ConversationStatus = "open" | "resolved";
+
+export interface Conversation {
+    id: string;
+    type: ConversationType;
+    courseId?: string; // Only for course-type conversations
+    courseName?: string;
+    userId: string; // The student/initiating user
+    userName: string;
+    userPhoto?: string;
+    participantIds: string[]; // All UIDs involved (user + staff)
+    lastMessageAt: any;
+    lastMessagePreview: string;
+    lastMessageSenderId?: string;
+    status: ConversationStatus;
+    unreadCount?: number; // For displaying badges
+    createdAt: any;
+}
+
+export interface Message {
+    id: string;
+    conversationId: string;
+    senderId: string;
+    senderName: string;
+    senderPhoto?: string;
+    senderRole: UserRole;
+    text: string;
+    attachmentUrl?: string;
+    attachmentName?: string;
+    read: boolean;
+    createdAt: any;
+}
