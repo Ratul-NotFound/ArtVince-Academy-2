@@ -1,11 +1,51 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 import { motion, useScroll, useTransform, useSpring } from "framer-motion";
 import ScrollReveal from "./ScrollReveal";
+import { db } from "@/lib/firebase";
+import { collection, getDocs, query, where } from "firebase/firestore";
 
 export default function AboutSection() {
     const containerRef = useRef(null);
+    const [stats, setStats] = useState({
+        mentors: "20+",
+        graduates: "500+",
+        placement: "95%",
+        projects: "1.2k"
+    });
+
+    useEffect(() => {
+        const fetchStats = async () => {
+            try {
+                // Get Trainer Count
+                const trainerQuery = query(collection(db, "users"), where("role", "==", "trainer"));
+                const trainerSnap = await getDocs(trainerQuery);
+                const trainerCount = trainerSnap.size;
+
+                // Get Student Count
+                const studentQuery = query(collection(db, "users"), where("role", "==", "user"));
+                const studentSnap = await getDocs(studentQuery);
+                const studentCount = studentSnap.size;
+
+                // Get Showcase Count (Projects)
+                const showcaseSnap = await getDocs(collection(db, "showcase"));
+                const showcaseCount = showcaseSnap.size;
+
+                setStats(prev => ({
+                    ...prev,
+                    mentors: `${trainerCount}+`,
+                    graduates: `${studentCount}+`,
+                    projects: showcaseCount > 1000 ? `${(showcaseCount / 1000).toFixed(1)}k` : `${showcaseCount}`
+                }));
+            } catch (error) {
+                console.error("Error fetching about stats:", error);
+            }
+        };
+
+        fetchStats();
+    }, []);
+
     const { scrollYProgress } = useScroll({
         target: containerRef,
         offset: ["start end", "end start"],
@@ -59,10 +99,10 @@ export default function AboutSection() {
 
                             <div className="grid grid-cols-2 gap-8" suppressHydrationWarning>
                                 {[
-                                    { label: "Mentors", value: "20+" },
-                                    { label: "Graduates", value: "500+" },
-                                    { label: "Placement", value: "95%" },
-                                    { label: "Projects", value: "1.2k" },
+                                    { label: "Mentors", value: stats.mentors },
+                                    { label: "Operatives", value: stats.graduates },
+                                    { label: "Placement", value: stats.placement },
+                                    { label: "Showcase", value: stats.projects },
                                 ].map((stat, i) => (
                                     <motion.div
                                         key={i}
