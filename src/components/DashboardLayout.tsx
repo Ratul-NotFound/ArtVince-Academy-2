@@ -53,7 +53,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
                             onClick={() => setMobileMenuOpen(false)}
-                            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 md:hidden"
+                            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[60] md:hidden"
                         />
                         {/* Drawer */}
                         <motion.div
@@ -61,7 +61,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
                             animate={{ x: 0 }}
                             exit={{ x: "-100%" }}
                             transition={{ type: "spring", damping: 25, stiffness: 300 }}
-                            className="fixed left-0 top-0 bottom-0 w-72 z-50 md:hidden"
+                            className="fixed left-0 top-0 bottom-0 w-72 z-[70] md:hidden"
                         >
                             <div className="h-full pt-20">
                                 <Sidebar />
@@ -82,11 +82,13 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
                 {/* Top Header / Mobile Bar */}
                 <header className="h-16 sm:h-20 border-b border-border flex items-center justify-between px-4 sm:px-8 bg-background/50 backdrop-blur-md z-30 shrink-0">
                     <div className="flex items-center gap-4">
+                        {/* Mobile Menu Button - larger touch target */}
                         <button
                             onClick={() => setMobileMenuOpen(true)}
-                            className="md:hidden p-2 hover:bg-foreground/5 rounded-lg text-foreground/50"
+                            className="md:hidden p-3 -ml-1 hover:bg-primary/10 active:bg-primary/20 rounded-xl text-foreground border border-border/50 transition-all"
+                            aria-label="Open menu"
                         >
-                            <Menu size={20} />
+                            <Menu size={24} />
                         </button>
                         <h2 className="font-robot text-[10px] sm:text-xs uppercase tracking-[0.2em] sm:tracking-[0.3em] text-foreground/30 font-bold hidden sm:block">
                             Artvince Management System
