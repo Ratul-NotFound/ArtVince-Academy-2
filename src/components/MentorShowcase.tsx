@@ -9,6 +9,7 @@ import { useState, useEffect } from "react";
 import { db } from "@/lib/firebase";
 import { collection, query, where, getDocs, limit } from "firebase/firestore";
 import { UserProfile } from "@/types";
+import { getFromCache, setInCache, CACHE_TTL } from "@/lib/cache";
 
 export default function MentorShowcase() {
     const [mentors, setMentors] = useState<UserProfile[]>([]);
@@ -16,6 +17,16 @@ export default function MentorShowcase() {
 
     useEffect(() => {
         const fetchMentors = async () => {
+            const CACHE_KEY = "mentors_showcase";
+
+            // Try cache first
+            const cached = getFromCache<UserProfile[]>(CACHE_KEY);
+            if (cached) {
+                setMentors(cached);
+                setLoading(false);
+                return;
+            }
+
             try {
                 const q = query(
                     collection(db, "users"),
@@ -27,7 +38,14 @@ export default function MentorShowcase() {
                     uid: doc.id,
                     ...doc.data()
                 } as UserProfile));
+
                 setMentors(trainers);
+
+                // Cache the result
+                setInCache(CACHE_KEY, trainers, {
+                    ttl: CACHE_TTL.TRAINERS,
+                    useLocalStorage: true
+                });
             } catch (error) {
                 console.error("Error fetching mentors for showcase:", error);
             } finally {

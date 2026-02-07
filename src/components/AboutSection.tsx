@@ -5,10 +5,18 @@ import { motion, useScroll, useTransform, useSpring } from "framer-motion";
 import ScrollReveal from "./ScrollReveal";
 import { db } from "@/lib/firebase";
 import { collection, getDocs, query, where } from "firebase/firestore";
+import { getFromCache, setInCache, CACHE_TTL } from "@/lib/cache";
+
+interface StatsData {
+    mentors: string;
+    graduates: string;
+    placement: string;
+    projects: string;
+}
 
 export default function AboutSection() {
     const containerRef = useRef(null);
-    const [stats, setStats] = useState({
+    const [stats, setStats] = useState<StatsData>({
         mentors: "20+",
         graduates: "500+",
         placement: "95%",
@@ -17,6 +25,15 @@ export default function AboutSection() {
 
     useEffect(() => {
         const fetchStats = async () => {
+            const CACHE_KEY = "about_section_stats";
+
+            // Try cache first
+            const cached = getFromCache<StatsData>(CACHE_KEY);
+            if (cached) {
+                setStats(cached);
+                return;
+            }
+
             try {
                 // Get Trainer Count
                 const trainerQuery = query(collection(db, "users"), where("role", "==", "trainer"));
@@ -32,12 +49,20 @@ export default function AboutSection() {
                 const showcaseSnap = await getDocs(collection(db, "showcase"));
                 const showcaseCount = showcaseSnap.size;
 
-                setStats(prev => ({
-                    ...prev,
+                const newStats: StatsData = {
                     mentors: `${trainerCount}+`,
                     graduates: `${studentCount}+`,
+                    placement: "95%",
                     projects: showcaseCount > 1000 ? `${(showcaseCount / 1000).toFixed(1)}k` : `${showcaseCount}`
-                }));
+                };
+
+                setStats(newStats);
+
+                // Cache the result
+                setInCache(CACHE_KEY, newStats, {
+                    ttl: CACHE_TTL.STATS,
+                    useLocalStorage: true
+                });
             } catch (error) {
                 console.error("Error fetching about stats:", error);
             }

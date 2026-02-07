@@ -37,6 +37,11 @@ export default function FloatingChat() {
     const [enrolledCourses, setEnrolledCourses] = useState<Course[]>([]);
     const [unreadCount, setUnreadCount] = useState(0);
 
+    // Interactive effects state (must be before any returns)
+    const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+    const [isHovered, setIsHovered] = useState(false);
+    const [ripples, setRipples] = useState<{ id: number; x: number; y: number }[]>([]);
+
     // Fetch conversations
     useEffect(() => {
         if (!user?.uid) {
@@ -122,14 +127,6 @@ export default function FloatingChat() {
         setShowNewChat(false);
     };
 
-    // Don't render if not logged in
-    if (!user) return null;
-
-    // Mouse position for interactive effects
-    const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
-    const [isHovered, setIsHovered] = useState(false);
-    const [ripples, setRipples] = useState<{ id: number; x: number; y: number }[]>([]);
-
     const handleMouseMove = (e: React.MouseEvent<HTMLButtonElement>) => {
         const rect = e.currentTarget.getBoundingClientRect();
         const x = (e.clientX - rect.left - rect.width / 2) / 10;
@@ -146,6 +143,9 @@ export default function FloatingChat() {
         setTimeout(() => setRipples(prev => prev.filter(r => r.id !== id)), 600);
         setIsOpen(true);
     };
+
+    // Don't render if not logged in
+    if (!user) return null;
 
     return (
         <>

@@ -9,6 +9,7 @@ import { useState, useEffect } from "react";
 import { db } from "@/lib/firebase";
 import { collection, getDocs, query, limit } from "firebase/firestore";
 import { Course } from "@/types";
+import { getFromCache, setInCache, CACHE_TTL } from "@/lib/cache";
 
 export default function CoursesGrid() {
     const [courses, setCourses] = useState<Course[]>([]);
@@ -17,6 +18,16 @@ export default function CoursesGrid() {
 
     useEffect(() => {
         const fetchCourses = async () => {
+            const CACHE_KEY = "courses_grid_home";
+
+            // Try cache first
+            const cached = getFromCache<Course[]>(CACHE_KEY);
+            if (cached) {
+                setCourses(cached);
+                setLoading(false);
+                return;
+            }
+
             try {
                 // Fetch more items to allow client-side filtering
                 const q = query(collection(db, "courses"), limit(50));
@@ -26,26 +37,35 @@ export default function CoursesGrid() {
                 // 1. Filter for "Published" status OR courses without status field (client-side)
                 data = data.filter(course => !course.status || course.status === "Published");
 
-                // 2. Get actual enrollment counts from enrollments collection
-                const enrollmentCounts: { [key: string]: number } = {};
-                try {
-                    const enrollmentsSnapshot = await getDocs(collection(db, "enrollments"));
-                    enrollmentsSnapshot.docs.forEach(doc => {
-                        const enrollment = doc.data();
-                        const courseId = enrollment.courseId;
-                        if (courseId) {
-                            enrollmentCounts[courseId] = (enrollmentCounts[courseId] || 0) + 1;
-                        }
-                    });
-                } catch (enrollError) {
-                    console.warn("Enrollment counts restricted by security rules:", enrollError);
-                    // Continue without counts
+                // 2. Get actual enrollment counts from enrollments collection (cached separately)
+                const ENROLLMENT_CACHE_KEY = "enrollment_counts";
+                let enrollmentCounts = getFromCache<{ [key: string]: number }>(ENROLLMENT_CACHE_KEY);
+
+                if (!enrollmentCounts) {
+                    enrollmentCounts = {};
+                    try {
+                        const enrollmentsSnapshot = await getDocs(collection(db, "enrollments"));
+                        enrollmentsSnapshot.docs.forEach(doc => {
+                            const enrollment = doc.data();
+                            const courseId = enrollment.courseId;
+                            if (courseId) {
+                                enrollmentCounts![courseId] = (enrollmentCounts![courseId] || 0) + 1;
+                            }
+                        });
+                        // Cache enrollment counts
+                        setInCache(ENROLLMENT_CACHE_KEY, enrollmentCounts, {
+                            ttl: CACHE_TTL.ENROLLMENTS,
+                            useLocalStorage: true
+                        });
+                    } catch (enrollError) {
+                        console.warn("Enrollment counts restricted by security rules:", enrollError);
+                    }
                 }
 
                 // 3. Add real enrollment counts to courses
                 data = data.map(course => ({
                     ...course,
-                    enrolledCount: enrollmentCounts[course.id] || 0
+                    enrolledCount: enrollmentCounts?.[course.id] || 0
                 }));
 
                 // 4. Sort by createdAt desc
@@ -55,8 +75,15 @@ export default function CoursesGrid() {
                     return timeB - timeA;
                 });
 
-                // 5. Take top 4
-                setCourses(data.slice(0, 4));
+                // 5. Take top 4 and cache
+                const topCourses = data.slice(0, 4);
+                setCourses(topCourses);
+
+                // Cache the result
+                setInCache(CACHE_KEY, topCourses, {
+                    ttl: CACHE_TTL.COURSES,
+                    useLocalStorage: true
+                });
             } catch (err: any) {
                 console.error("🔥 Firestore Course Fetch Error:", err);
                 let customError = "Failed to fetch courses.";
