@@ -13,6 +13,7 @@ import SmoothScroll from "@/components/SmoothScroll";
 import Navbar from "@/components/Navbar";
 import CustomCursor from "@/components/CustomCursor";
 import HydrationFix from "@/components/HydrationFix";
+import FloatingChat from "@/components/messaging/FloatingChat";
 
 export default function RootLayout({
   children,
@@ -58,6 +59,7 @@ export default function RootLayout({
                 {children}
               </main>
             </SmoothScroll>
+            <FloatingChat />
           </HydrationFix>
         </AuthProvider>
       </body>
