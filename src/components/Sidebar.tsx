@@ -22,7 +22,11 @@ import {
 } from "lucide-react";
 import { motion } from "framer-motion";
 
-export default function Sidebar() {
+interface SidebarProps {
+    onItemClick?: () => void;
+}
+
+export default function Sidebar({ onItemClick }: SidebarProps) {
     const { profile, userRole, logout } = useAuth();
     const pathname = usePathname();
 
@@ -97,6 +101,7 @@ export default function Sidebar() {
                             <Link
                                 key={item.href}
                                 href={item.href}
+                                onClick={onItemClick}
                                 className={`flex items-center gap-3 px-4 py-3 rounded-xl font-robot text-xs uppercase tracking-widest transition-all relative group ${isActive
                                     ? "text-primary bg-primary/5 shadow-[inset_0_0_20px_rgba(var(--primary-rgb),0.05)]"
                                     : "text-foreground/50 hover:text-foreground hover:bg-foreground/5"

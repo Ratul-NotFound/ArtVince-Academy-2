@@ -106,7 +106,7 @@ export default function Navbar() {
                     ))}
 
                     {/* Theme Dropdown */}
-                    <div className="relative" ref={themeRef}>
+                    <div className="relative" ref={themeRef} suppressHydrationWarning>
                         <button
                             onClick={() => setIsThemeOpen(!isThemeOpen)}
                             className="flex items-center gap-2 p-2 rounded-lg hover:bg-foreground/5 text-foreground transition-all"
@@ -149,7 +149,7 @@ export default function Navbar() {
                         </AnimatePresence>
                     </div>
 
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-4" suppressHydrationWarning>
                         {mounted && user ? (
                             <>
                                 <NotificationDropdown />
@@ -219,7 +219,7 @@ export default function Navbar() {
                         ))}
 
                         {/* Mobile Theme Selection */}
-                        <div className="flex gap-4 p-4 glass rounded-2xl border border-border">
+                        <div className="flex gap-4 p-4 glass rounded-2xl border border-border" suppressHydrationWarning>
                             {themes.map((t) => (
                                 <button
                                     key={t.name}
@@ -232,7 +232,7 @@ export default function Navbar() {
                             ))}
                         </div>
 
-                        <div className="w-full space-y-4">
+                        <div className="w-full space-y-4" suppressHydrationWarning>
                             {mounted && user ? (
                                 <>
                                     <Link

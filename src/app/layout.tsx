@@ -55,11 +55,13 @@ export default function RootLayout({
             <CustomCursor />
             <SmoothScroll>
               <Navbar />
-              <main className="min-h-screen">
+              <main className="min-h-screen" suppressHydrationWarning>
                 {children}
               </main>
             </SmoothScroll>
-            <FloatingChat />
+            <div suppressHydrationWarning>
+              <FloatingChat />
+            </div>
           </HydrationFix>
         </AuthProvider>
       </body>

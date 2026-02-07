@@ -83,8 +83,8 @@ export default function ProfilePage() {
                         </h2>
                         <div className="flex items-center justify-center gap-2 mt-2">
                             <div className={`px-3 py-1 rounded-full font-robot text-[9px] uppercase font-bold tracking-widest ${userRole === "admin" ? "bg-red-500/10 text-red-500 border border-red-500/20" :
-                                    userRole === "trainer" ? "bg-cyan-500/10 text-cyan-500 border border-cyan-500/20" :
-                                        "bg-primary/10 text-primary border border-primary/20"
+                                userRole === "trainer" ? "bg-cyan-500/10 text-cyan-500 border border-cyan-500/20" :
+                                    "bg-primary/10 text-primary border border-primary/20"
                                 }`}>
                                 <ShieldCheck size={10} className="inline mr-1" />
                                 {userRole}

@@ -13,6 +13,7 @@ export default function NotificationDropdown() {
     const { user } = useAuth();
     const [notifications, setNotifications] = useState<Notification[]>([]);
     const [isOpen, setIsOpen] = useState(false);
+    const [mounted, setMounted] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
 
     const unreadCount = notifications.filter(n => !n.read).length;
@@ -36,6 +37,7 @@ export default function NotificationDropdown() {
 
     // Close dropdown on outside click
     useEffect(() => {
+        setMounted(true);
         const handleClickOutside = (e: MouseEvent) => {
             if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
                 setIsOpen(false);
@@ -80,7 +82,7 @@ export default function NotificationDropdown() {
     if (!user) return null;
 
     return (
-        <div className="relative" ref={dropdownRef}>
+        <div className="relative" ref={dropdownRef} suppressHydrationWarning>
             <button
                 onClick={() => setIsOpen(!isOpen)}
                 className="relative p-2 rounded-xl hover:bg-foreground/5 transition-colors"
@@ -153,9 +155,9 @@ export default function NotificationDropdown() {
                                                     {n.message}
                                                 </p>
                                                 <p className="font-inter text-[9px] text-foreground/20 mt-1">
-                                                    {n.createdAt?.seconds
+                                                    {mounted && n.createdAt?.seconds
                                                         ? new Date(n.createdAt.seconds * 1000).toLocaleDateString()
-                                                        : "Just now"}
+                                                        : (mounted ? "Just now" : "")}
                                                 </p>
                                             </div>
                                             {!n.read && (
