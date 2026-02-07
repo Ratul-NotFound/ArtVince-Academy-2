@@ -125,22 +125,165 @@ export default function FloatingChat() {
     // Don't render if not logged in
     if (!user) return null;
 
+    // Mouse position for interactive effects
+    const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+    const [isHovered, setIsHovered] = useState(false);
+    const [ripples, setRipples] = useState<{ id: number; x: number; y: number }[]>([]);
+
+    const handleMouseMove = (e: React.MouseEvent<HTMLButtonElement>) => {
+        const rect = e.currentTarget.getBoundingClientRect();
+        const x = (e.clientX - rect.left - rect.width / 2) / 10;
+        const y = (e.clientY - rect.top - rect.height / 2) / 10;
+        setMousePos({ x, y });
+    };
+
+    const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+        const rect = e.currentTarget.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        const id = Date.now();
+        setRipples(prev => [...prev, { id, x, y }]);
+        setTimeout(() => setRipples(prev => prev.filter(r => r.id !== id)), 600);
+        setIsOpen(true);
+    };
+
     return (
         <>
-            {/* Floating Button */}
-            <motion.button
-                onClick={() => setIsOpen(true)}
-                className={`fixed bottom-6 right-6 z-40 w-16 h-16 rounded-full bg-primary shadow-2xl shadow-primary/30 flex items-center justify-center text-white hover:scale-110 transition-all ${isOpen ? "hidden" : ""}`}
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.95 }}
-            >
-                <MessageSquare size={28} />
+            {/* Interactive Floating Chat Button */}
+            <div className={`fixed bottom-6 right-6 z-40 ${isOpen ? "hidden" : ""}`}>
+                {/* Orbiting particles */}
+                {[...Array(3)].map((_, i) => (
+                    <motion.div
+                        key={i}
+                        className="absolute w-2 h-2 rounded-full bg-primary/60"
+                        style={{ left: 28, top: 28 }}
+                        animate={{
+                            x: [0, Math.cos(i * 2.1) * 40, 0],
+                            y: [0, Math.sin(i * 2.1) * 40, 0],
+                            scale: [0.5, 1, 0.5],
+                            opacity: [0.3, 0.8, 0.3],
+                        }}
+                        transition={{
+                            duration: 3 + i * 0.5,
+                            repeat: Infinity,
+                            ease: "easeInOut",
+                            delay: i * 0.8,
+                        }}
+                    />
+                ))}
+
+                {/* Animated glow ring */}
+                <motion.div
+                    className="absolute inset-0 rounded-2xl"
+                    animate={{
+                        scale: [1, 1.3, 1],
+                        opacity: [0.3, 0, 0.3],
+                    }}
+                    transition={{
+                        duration: 2,
+                        repeat: Infinity,
+                        ease: "easeInOut"
+                    }}
+                    style={{
+                        width: 64,
+                        height: 64,
+                        background: "radial-gradient(circle, rgba(0, 112, 243, 0.4) 0%, transparent 70%)"
+                    }}
+                />
+
+                {/* Main button with tilt effect */}
+                <motion.button
+                    onClick={handleClick}
+                    onMouseMove={handleMouseMove}
+                    onMouseEnter={() => setIsHovered(true)}
+                    onMouseLeave={() => {
+                        setIsHovered(false);
+                        setMousePos({ x: 0, y: 0 });
+                    }}
+                    className="relative w-16 h-16 rounded-2xl flex items-center justify-center text-white overflow-hidden group border border-primary/30"
+                    animate={{
+                        rotateX: isHovered ? -mousePos.y : 0,
+                        rotateY: isHovered ? mousePos.x : 0,
+                        scale: isHovered ? 1.1 : 1,
+                    }}
+                    whileTap={{ scale: 0.95 }}
+                    transition={{ type: "spring", stiffness: 400, damping: 20 }}
+                    style={{
+                        background: "linear-gradient(135deg, #0070F3 0%, #0050B3 100%)",
+                        boxShadow: isHovered
+                            ? "0 20px 50px rgba(0, 112, 243, 0.5), 0 0 30px rgba(0, 112, 243, 0.3)"
+                            : "0 8px 32px rgba(0, 112, 243, 0.4)",
+                        transformStyle: "preserve-3d",
+                        perspective: "1000px"
+                    }}
+                >
+                    {/* Ripple effects */}
+                    {ripples.map(ripple => (
+                        <motion.span
+                            key={ripple.id}
+                            className="absolute rounded-full bg-white/40 pointer-events-none"
+                            initial={{ width: 0, height: 0, opacity: 0.5 }}
+                            animate={{ width: 100, height: 100, opacity: 0 }}
+                            transition={{ duration: 0.6, ease: "easeOut" }}
+                            style={{
+                                left: ripple.x - 50,
+                                top: ripple.y - 50,
+                            }}
+                        />
+                    ))}
+
+                    {/* Shine sweep effect on hover */}
+                    <motion.div
+                        className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent"
+                        initial={{ x: "-100%" }}
+                        animate={{ x: isHovered ? "100%" : "-100%" }}
+                        transition={{ duration: 0.6, ease: "easeInOut" }}
+                        style={{ skewX: "-20deg" }}
+                    />
+
+                    {/* Light reflection */}
+                    <div className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-white/20 to-transparent rounded-t-2xl" />
+
+                    {/* Icon with bounce */}
+                    <div className="relative z-10">
+                        <motion.div
+                            animate={{
+                                y: [0, -3, 0],
+                                rotate: isHovered ? [0, -10, 10, 0] : 0
+                            }}
+                            transition={{
+                                y: { duration: 2, repeat: Infinity, ease: "easeInOut" },
+                                rotate: { duration: 0.5, ease: "easeInOut" }
+                            }}
+                        >
+                            <MessageSquare size={26} strokeWidth={2} className="drop-shadow-lg" />
+                        </motion.div>
+                    </div>
+
+                    {/* Hover glow */}
+                    <motion.div
+                        className="absolute inset-0 rounded-2xl"
+                        animate={{ opacity: isHovered ? 0.15 : 0 }}
+                        style={{ background: "radial-gradient(circle at center, white 0%, transparent 70%)" }}
+                    />
+                </motion.button>
+
+                {/* Unread badge with pulse */}
                 {unreadCount > 0 && (
-                    <span className="absolute -top-1 -right-1 w-6 h-6 bg-red-500 rounded-full flex items-center justify-center text-xs font-bold">
+                    <motion.span
+                        className="absolute -top-2 -right-2 min-w-6 h-6 px-1.5 bg-red-500 rounded-full flex items-center justify-center text-xs font-bold text-white shadow-lg shadow-red-500/30"
+                        initial={{ scale: 0 }}
+                        animate={{
+                            scale: [1, 1.1, 1],
+                        }}
+                        transition={{
+                            scale: { duration: 1.5, repeat: Infinity, ease: "easeInOut" }
+                        }}
+                    >
                         {unreadCount > 9 ? "9+" : unreadCount}
-                    </span>
+                    </motion.span>
                 )}
-            </motion.button>
+            </div>
 
             {/* Chat Panel */}
             <AnimatePresence>
