@@ -293,7 +293,7 @@ export default function FloatingChat() {
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 100, scale: 0.9 }}
                         transition={{ type: "spring", damping: 25, stiffness: 300 }}
-                        className="fixed bottom-6 right-6 z-50 w-[420px] h-[600px] max-h-[80vh] bg-background border border-border rounded-3xl shadow-2xl overflow-hidden flex flex-col"
+                        className="fixed inset-4 sm:inset-auto sm:bottom-6 sm:right-6 z-50 sm:w-[380px] md:w-[420px] sm:h-[550px] md:h-[600px] sm:max-h-[80vh] bg-background border border-border rounded-2xl sm:rounded-3xl shadow-2xl overflow-hidden flex flex-col"
                     >
                         {/* Header */}
                         <div className="p-4 border-b border-border bg-surface/50 flex items-center justify-between shrink-0">

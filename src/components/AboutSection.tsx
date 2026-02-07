@@ -89,8 +89,8 @@ export default function AboutSection() {
     const scale = useTransform(smoothProgress, [0, 0.5, 1], [0.8, 1, 0.8]);
 
     return (
-        <section ref={containerRef} className="py-32 bg-surface relative overflow-hidden transition-colors duration-300" suppressHydrationWarning>
-            <div className="container mx-auto px-6 grid md:grid-cols-2 gap-20 items-center" suppressHydrationWarning>
+        <section ref={containerRef} className="py-16 sm:py-24 md:py-32 bg-surface relative overflow-hidden transition-colors duration-300" suppressHydrationWarning>
+            <div className="container mx-auto px-4 sm:px-6 grid md:grid-cols-2 gap-10 sm:gap-16 md:gap-20 items-center" suppressHydrationWarning>
 
                 {/* Image Column - Slower Parallax */}
                 <motion.div style={{ y: yImage, scale }}>
@@ -115,14 +115,14 @@ export default function AboutSection() {
                 <motion.div style={{ y: yText }}>
                     <ScrollReveal direction="right" distance={50}>
                         <div suppressHydrationWarning>
-                            <span className="font-handwritten text-4xl text-primary block mb-6">
+                            <span className="font-handwritten text-2xl sm:text-3xl md:text-4xl text-primary block mb-4 sm:mb-6">
                                 Where Art Meets Code
                             </span>
-                            <p className="font-inter text-xl text-foreground/70 leading-relaxed mb-10">
+                            <p className="font-inter text-base sm:text-lg md:text-xl text-foreground/70 leading-relaxed mb-6 sm:mb-8 md:mb-10">
                                 Artvince Academy is more than just an education platform. We are a creative incubator designed for the next generation of game developers and 3D artists. Our curriculum is built by industry veterans who have worked on AAA titles, ensuring you learn the exact skills used in professional studios worldwide.
                             </p>
 
-                            <div className="grid grid-cols-2 gap-8" suppressHydrationWarning>
+                            <div className="grid grid-cols-2 gap-4 sm:gap-6 md:gap-8" suppressHydrationWarning>
                                 {[
                                     { label: "Mentors", value: stats.mentors },
                                     { label: "Operatives", value: stats.graduates },
@@ -132,11 +132,11 @@ export default function AboutSection() {
                                     <motion.div
                                         key={i}
                                         whileHover={{ x: 10, borderColor: "rgba(var(--primary-rgb), 1)" }}
-                                        className="border-l-2 border-primary/30 pl-6 py-2 transition-colors cursor-default"
+                                        className="border-l-2 border-primary/30 pl-4 sm:pl-6 py-2 transition-colors cursor-default"
                                         suppressHydrationWarning
                                     >
-                                        <span className="font-robot text-3xl font-bold block text-foreground">{stat.value}</span>
-                                        <span className="font-robot text-[10px] uppercase tracking-widest text-foreground/40">{stat.label}</span>
+                                        <span className="font-robot text-xl sm:text-2xl md:text-3xl font-bold block text-foreground">{stat.value}</span>
+                                        <span className="font-robot text-[8px] sm:text-[10px] uppercase tracking-widest text-foreground/40">{stat.label}</span>
                                     </motion.div>
                                 ))}
                             </div>

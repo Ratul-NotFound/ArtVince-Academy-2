@@ -135,17 +135,17 @@ export default function Hero() {
             </motion.div>
 
             {/* Content */}
-            <div className="container mx-auto px-6 relative z-10 text-center" suppressHydrationWarning>
+            <div className="container mx-auto px-4 sm:px-6 relative z-10 text-center" suppressHydrationWarning>
                 <ScrollReveal rotateX={30} distance={150} scale={0.7} blur={true}>
                     <motion.div
                         style={{ opacity: contentOpacity, scale: contentScale, y: combinedContentY, x: headlineX }}
                         className="transform-gpu"
                         suppressHydrationWarning
                     >
-                        <span className="font-handwritten text-5xl text-primary mb-6 block animate-pulse drop-shadow-[0_0_15px_rgba(var(--primary-rgb),0.5)]">
+                        <span className="font-handwritten text-2xl sm:text-3xl md:text-5xl text-primary mb-4 sm:mb-6 block animate-pulse drop-shadow-[0_0_15px_rgba(var(--primary-rgb),0.5)]">
                             Master the Art of 3D Creation
                         </span>
-                        <h1 className="font-robot text-6xl md:text-9xl font-bold uppercase tracking-tighter leading-none mb-6">
+                        <h1 className="font-robot text-4xl sm:text-6xl md:text-8xl lg:text-9xl font-bold uppercase tracking-tighter leading-none mb-4 sm:mb-6">
                             <span className="block overflow-hidden">
                                 <motion.span
                                     initial={{ y: "100%" }}
@@ -172,13 +172,13 @@ export default function Hero() {
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             transition={{ delay: 1 }}
-                            className="flex flex-col md:flex-row items-center justify-center gap-8 mt-16"
+                            className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 md:gap-8 mt-8 sm:mt-12 md:mt-16 px-4"
                         >
-                            <Link href="/courses">
+                            <Link href="/courses" className="w-full sm:w-auto">
                                 <motion.button
                                     whileHover={{ scale: 1.05 }}
                                     whileTap={{ scale: 0.95 }}
-                                    className="bg-primary text-white px-12 py-5 rounded-xl font-robot font-bold uppercase tracking-widest hover:bg-foreground hover:text-background transition-all group overflow-hidden relative shadow-[0_0_30px_rgba(var(--primary-rgb),0.3)] hover:shadow-[0_0_50px_rgba(var(--primary-rgb),0.5)]"
+                                    className="w-full sm:w-auto bg-primary text-white px-8 sm:px-12 py-4 sm:py-5 rounded-xl font-robot font-bold uppercase tracking-widest text-sm sm:text-base hover:bg-foreground hover:text-background transition-all group overflow-hidden relative shadow-[0_0_30px_rgba(var(--primary-rgb),0.3)] hover:shadow-[0_0_50px_rgba(var(--primary-rgb),0.5)]"
                                 >
                                     <span className="relative z-10">Start Learning</span>
                                     <motion.div
@@ -186,11 +186,11 @@ export default function Hero() {
                                     />
                                 </motion.button>
                             </Link>
-                            <Link href="/courses">
+                            <Link href="/courses" className="w-full sm:w-auto">
                                 <motion.button
                                     whileHover={{ scale: 1.05, borderColor: "rgba(var(--primary-rgb),1)" }}
                                     whileTap={{ scale: 0.95 }}
-                                    className="border border-foreground/20 glass px-12 py-5 rounded-xl font-robot font-bold uppercase tracking-widest hover:text-primary transition-all backdrop-blur-md"
+                                    className="w-full sm:w-auto border border-foreground/20 glass px-8 sm:px-12 py-4 sm:py-5 rounded-xl font-robot font-bold uppercase tracking-widest text-sm sm:text-base hover:text-primary transition-all backdrop-blur-md"
                                 >
                                     View Courses
                                 </motion.button>

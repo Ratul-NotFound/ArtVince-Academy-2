@@ -20,9 +20,9 @@ export default function CoursesGrid() {
         const fetchCourses = async () => {
             const CACHE_KEY = "courses_grid_home";
 
-            // Try cache first
+            // Try cache first - but only if it has data
             const cached = getFromCache<Course[]>(CACHE_KEY);
-            if (cached) {
+            if (cached && cached.length > 0) {
                 setCourses(cached);
                 setLoading(false);
                 return;
@@ -79,11 +79,13 @@ export default function CoursesGrid() {
                 const topCourses = data.slice(0, 4);
                 setCourses(topCourses);
 
-                // Cache the result
-                setInCache(CACHE_KEY, topCourses, {
-                    ttl: CACHE_TTL.COURSES,
-                    useLocalStorage: true
-                });
+                // Only cache if we have results
+                if (topCourses.length > 0) {
+                    setInCache(CACHE_KEY, topCourses, {
+                        ttl: CACHE_TTL.COURSES,
+                        useLocalStorage: true
+                    });
+                }
             } catch (err: any) {
                 console.error("🔥 Firestore Course Fetch Error:", err);
                 let customError = "Failed to fetch courses.";
@@ -103,14 +105,14 @@ export default function CoursesGrid() {
     }, []);
 
     return (
-        <section className="py-32 bg-background overflow-hidden transition-colors duration-300">
-            <div className="container mx-auto px-6" suppressHydrationWarning>
+        <section className="py-16 sm:py-24 md:py-32 bg-background overflow-hidden transition-colors duration-300">
+            <div className="container mx-auto px-4 sm:px-6" suppressHydrationWarning>
                 <ScrollReveal distance={50} direction="up">
-                    <div className="flex flex-col md:flex-row justify-between items-end mb-20 gap-8" suppressHydrationWarning>
+                    <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-10 sm:mb-16 md:mb-20 gap-6 sm:gap-8" suppressHydrationWarning>
                         <div suppressHydrationWarning>
-                            <span className="font-handwritten text-3xl text-primary block mb-2">Our Programs</span>
-                            <h2 className="font-robot text-5xl md:text-7xl font-bold uppercase tracking-tighter text-foreground">
-                                Forging the <br /> <span className="text-outline-theme text-transparent">Next Generation</span>
+                            <span className="font-handwritten text-xl sm:text-2xl md:text-3xl text-primary block mb-2">Our Programs</span>
+                            <h2 className="font-robot text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-bold uppercase tracking-tighter text-foreground">
+                                Forging the <br className="hidden sm:block" /> <span className="text-outline-theme text-transparent">Next Generation</span>
                             </h2>
                         </div>
                         <Link href="/courses" className="font-robot uppercase tracking-widest text-sm border-b border-primary pb-2 hover:text-primary transition-all">
@@ -132,11 +134,11 @@ export default function CoursesGrid() {
                         No active courses available at the moment.
                     </div>
                 ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8" suppressHydrationWarning>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 md:gap-8" suppressHydrationWarning>
                         {courses.map((course) => (
                             <ScrollReveal key={course.id} distance={30} direction="up" rotateX={20}>
                                 <Link href={`/courses/${course.id}`}>
-                                    <TiltCard className="group relative h-[500px] overflow-hidden rounded-2xl cursor-pointer">
+                                    <TiltCard className="group relative h-[350px] sm:h-[400px] md:h-[500px] overflow-hidden rounded-2xl cursor-pointer">
                                         {course.thumbnail ? (
                                             <Image
                                                 src={course.thumbnail}

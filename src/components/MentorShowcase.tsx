@@ -9,7 +9,7 @@ import { useState, useEffect } from "react";
 import { db } from "@/lib/firebase";
 import { collection, query, where, getDocs, limit } from "firebase/firestore";
 import { UserProfile } from "@/types";
-import { getFromCache, setInCache, CACHE_TTL } from "@/lib/cache";
+import { getFromCache, setInCache, clearCache, CACHE_TTL } from "@/lib/cache";
 
 export default function MentorShowcase() {
     const [mentors, setMentors] = useState<UserProfile[]>([]);
@@ -19,33 +19,34 @@ export default function MentorShowcase() {
         const fetchMentors = async () => {
             const CACHE_KEY = "mentors_showcase";
 
-            // Try cache first
-            const cached = getFromCache<UserProfile[]>(CACHE_KEY);
-            if (cached) {
-                setMentors(cached);
-                setLoading(false);
-                return;
-            }
+            // Clear any stale cache first (temporary fix)
+            clearCache(CACHE_KEY);
 
             try {
+                console.log("Fetching trainers from Firebase...");
                 const q = query(
                     collection(db, "users"),
                     where("role", "==", "trainer"),
                     limit(4)
                 );
                 const querySnapshot = await getDocs(q);
+                console.log("Firebase query returned:", querySnapshot.size, "trainers");
+
                 const trainers = querySnapshot.docs.map(doc => ({
                     uid: doc.id,
                     ...doc.data()
                 } as UserProfile));
 
+                console.log("Trainers data:", trainers);
                 setMentors(trainers);
 
-                // Cache the result
-                setInCache(CACHE_KEY, trainers, {
-                    ttl: CACHE_TTL.TRAINERS,
-                    useLocalStorage: true
-                });
+                // Only cache if we have results
+                if (trainers.length > 0) {
+                    setInCache(CACHE_KEY, trainers, {
+                        ttl: CACHE_TTL.TRAINERS,
+                        useLocalStorage: true
+                    });
+                }
             } catch (error) {
                 console.error("Error fetching mentors for showcase:", error);
             } finally {
@@ -57,17 +58,17 @@ export default function MentorShowcase() {
     }, []);
 
     return (
-        <section className="py-32 bg-surface">
-            <div className="container mx-auto px-6" suppressHydrationWarning>
+        <section className="py-16 sm:py-24 md:py-32 bg-surface">
+            <div className="container mx-auto px-4 sm:px-6" suppressHydrationWarning>
                 <ScrollReveal direction="up" distance={50}>
-                    <div className="flex flex-col md:flex-row justify-between items-end mb-20 gap-8" suppressHydrationWarning>
+                    <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-10 sm:mb-16 md:mb-20 gap-6 sm:gap-8" suppressHydrationWarning>
                         <div>
-                            <span className="font-handwritten text-3xl text-primary block mb-4">The Masters</span>
-                            <h2 className="font-robot text-5xl md:text-8xl font-black uppercase tracking-tighter text-foreground leading-none">
-                                INDUSTRY <br /> <span className="text-outline-theme text-transparent">LEGENDS</span>
+                            <span className="font-handwritten text-xl sm:text-2xl md:text-3xl text-primary block mb-2 sm:mb-4">The Masters</span>
+                            <h2 className="font-robot text-3xl sm:text-5xl md:text-6xl lg:text-8xl font-black uppercase tracking-tighter text-foreground leading-none">
+                                INDUSTRY <br className="hidden sm:block" /> <span className="text-outline-theme text-transparent">LEGENDS</span>
                             </h2>
                         </div>
-                        <p className="font-inter text-foreground/60 max-w-sm text-lg leading-relaxed border-l-2 border-primary/20 pl-8">
+                        <p className="font-inter text-foreground/60 max-w-sm text-sm sm:text-base md:text-lg leading-relaxed border-l-2 border-primary/20 pl-4 sm:pl-8">
                             Learn directly from veterans who have built the games you love. No fluff, just real-world studio expertise.
                         </p>
                     </div>
@@ -78,12 +79,12 @@ export default function MentorShowcase() {
                         <Loader2 className="animate-spin text-primary" size={48} />
                     </div>
                 ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 md:gap-8">
                         {mentors.map((mentor, index) => (
                             <ScrollReveal key={mentor.uid} direction="up" distance={30} rotateX={20} scale={0.9}>
-                                <TiltCard className="group relative bg-background rounded-[32px] overflow-hidden border border-white/5 hover:border-primary/50 transition-all duration-500 shadow-2xl">
+                                <TiltCard className="group relative bg-background rounded-[24px] sm:rounded-[32px] overflow-hidden border border-white/5 hover:border-primary/50 transition-all duration-500 shadow-2xl">
                                     {/* Image Container */}
-                                    <div className="relative h-[300px] w-full overflow-hidden">
+                                    <div className="relative h-[250px] sm:h-[280px] md:h-[300px] w-full overflow-hidden">
                                         {mentor.photoURL ? (
                                             <Image
                                                 src={mentor.photoURL}

@@ -9,13 +9,13 @@ export default function CoursesPage() {
     return (
         <div className="bg-background min-h-screen text-foreground transition-colors duration-300">
             <Navbar />
-            <div className="container mx-auto px-6 mb-20 pt-32">
+            <div className="container mx-auto px-4 sm:px-6 mb-12 sm:mb-20 pt-24 sm:pt-32">
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                 >
-                    <span className="font-handwritten text-4xl text-primary block mb-4">Master Your Craft</span>
-                    <h1 className="font-robot text-5xl md:text-8xl font-bold uppercase tracking-tighter text-foreground">
+                    <span className="font-handwritten text-2xl sm:text-3xl md:text-4xl text-primary block mb-2 sm:mb-4">Master Your Craft</span>
+                    <h1 className="font-robot text-3xl sm:text-5xl md:text-6xl lg:text-8xl font-bold uppercase tracking-tighter text-foreground">
                         3D Art <span className="text-outline-theme text-transparent">Catalogue</span>
                     </h1>
                 </motion.div>

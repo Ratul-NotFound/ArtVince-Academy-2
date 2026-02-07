@@ -91,21 +91,21 @@ function LoginContent() {
     };
 
     return (
-        <div className="min-h-screen bg-background flex items-center justify-center p-6 relative overflow-hidden transition-colors duration-300">
+        <div className="min-h-screen bg-background flex items-center justify-center p-4 sm:p-6 relative overflow-hidden transition-colors duration-300">
             {/* Decorative Orbs */}
-            <div className="absolute top-1/4 -left-20 w-80 h-80 bg-primary/20 rounded-full blur-[120px] animate-pulse" />
-            <div className="absolute bottom-1/4 -right-20 w-80 h-80 bg-blue-500/10 rounded-full blur-[120px] animate-pulse" />
+            <div className="absolute top-1/4 -left-20 w-60 sm:w-80 h-60 sm:h-80 bg-primary/20 rounded-full blur-[120px] animate-pulse" />
+            <div className="absolute bottom-1/4 -right-20 w-60 sm:w-80 h-60 sm:h-80 bg-blue-500/10 rounded-full blur-[120px] animate-pulse" />
 
             <motion.div
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="glass p-12 rounded-[2rem] border border-border w-full max-w-md relative z-10"
+                className="glass p-6 sm:p-8 md:p-12 rounded-[1.5rem] sm:rounded-[2rem] border border-border w-full max-w-md relative z-10"
             >
-                <Link href="/" className="block w-20 h-20 bg-primary/10 mx-auto rounded-2xl flex items-center justify-center skew-x-12 rotate-6 hover:scale-110 transition-transform overflow-hidden border border-primary/20">
-                    <img src="/favicon.png" alt="Artvince Logo" className="w-12 h-12 object-contain -skew-x-12" />
+                <Link href="/" className="block w-14 h-14 sm:w-20 sm:h-20 bg-primary/10 mx-auto rounded-xl sm:rounded-2xl flex items-center justify-center skew-x-12 rotate-6 hover:scale-110 transition-transform overflow-hidden border border-primary/20 mb-6">
+                    <img src="/favicon.png" alt="Artvince Logo" className="w-8 h-8 sm:w-12 sm:h-12 object-contain -skew-x-12" />
                 </Link>
 
-                <h1 className="font-robot text-3xl font-bold uppercase tracking-tighter mb-2 text-foreground text-center">
+                <h1 className="font-robot text-2xl sm:text-3xl font-bold uppercase tracking-tighter mb-2 text-foreground text-center">
                     {mode === "login" && "Initialize Session"}
                     {mode === "register" && "Create Account"}
                     {mode === "reset" && "Reset Password"}
