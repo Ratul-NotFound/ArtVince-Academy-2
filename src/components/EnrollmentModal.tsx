@@ -7,6 +7,14 @@ import { collection, addDoc } from "firebase/firestore";
 import { Course } from "@/types";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, CheckCircle, Smartphone, Receipt, ShieldCheck, AlertCircle } from "lucide-react";
+import {
+    sanitizeDisplayName,
+    sanitizePhoneNumber,
+    sanitizeTransactionId,
+    isValidTransactionId,
+    isValidPhoneNumber,
+    isValidDisplayName
+} from "@/lib/validation";
 
 interface EnrollmentModalProps {
     course: Course;
@@ -35,8 +43,30 @@ export default function EnrollmentModal({ course, isOpen, onClose }: EnrollmentM
         Rocket: process.env.NEXT_PUBLIC_ROCKET_NUMBER || "(Contact Admin for Number)",
     };
 
+    const [validationError, setValidationError] = useState<string | null>(null);
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        setValidationError(null);
+
+        // Validate inputs
+        if (!isValidDisplayName(formData.studentName)) {
+            setValidationError("Please enter a valid name (1-100 characters)");
+            return;
+        }
+        if (!isValidTransactionId(formData.transactionId)) {
+            setValidationError("Invalid transaction ID format. Use only letters, numbers, hyphens, and underscores.");
+            return;
+        }
+        if (formData.sendingNumber && !isValidPhoneNumber(formData.sendingNumber)) {
+            setValidationError("Invalid phone number format");
+            return;
+        }
+        if (formData.mobileNumber && !isValidPhoneNumber(formData.mobileNumber)) {
+            setValidationError("Invalid mobile number format");
+            return;
+        }
+
         setLoading(true);
         try {
             await addDoc(collection(db, "enrollments"), {
@@ -44,19 +74,19 @@ export default function EnrollmentModal({ course, isOpen, onClose }: EnrollmentM
                 courseId: course.id,
                 courseName: course.title,
                 coursePrice: course.price,
-                studentName: formData.studentName,
-                mobileNumber: formData.mobileNumber,
+                studentName: sanitizeDisplayName(formData.studentName),
+                mobileNumber: sanitizePhoneNumber(formData.mobileNumber),
                 email: formData.email,
                 paymentMethod: method,
-                transactionId: formData.transactionId,
-                sendingNumber: formData.sendingNumber,
+                transactionId: sanitizeTransactionId(formData.transactionId),
+                sendingNumber: sanitizePhoneNumber(formData.sendingNumber),
                 status: "pending",
                 requestedAt: new Date(),
             });
             setSubmitted(true);
         } catch (error) {
             console.error("Enrollment error:", error);
-            alert("Submission failed. Please try again.");
+            setValidationError("Submission failed. Please try again.");
         } finally {
             setLoading(false);
         }

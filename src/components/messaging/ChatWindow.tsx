@@ -18,6 +18,7 @@ import MessageInput from "./MessageInput";
 import { formatDistanceToNow } from "date-fns";
 import { User, BookOpen, CheckCircle2, ArrowLeft, Loader2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { sanitizeMessageContent, isValidMessageContent, sanitizeDisplayName } from "@/lib/validation";
 
 interface ChatWindowProps {
     conversation: Conversation | null;
@@ -79,13 +80,19 @@ export default function ChatWindow({ conversation, currentUser, onBack }: ChatWi
     const handleSendMessage = async (text: string) => {
         if (!conversation?.id || !currentUser.uid) return;
 
+        // Validate and sanitize message content
+        if (!isValidMessageContent(text)) return;
+        const sanitizedText = sanitizeMessageContent(text);
+        if (!sanitizedText.trim()) return;
+
         const messageData = {
             conversationId: conversation.id,
             senderId: currentUser.uid,
-            senderName: currentUser.displayName || "Anonymous",
+            senderName: sanitizeDisplayName(currentUser.displayName || "Anonymous"),
             senderPhoto: currentUser.photoURL || null,
             senderRole: currentUser.role,
-            text,
+            content: sanitizedText, // Match Firestore rules field name
+            text: sanitizedText, // Keep for backward compatibility
             read: false,
             createdAt: serverTimestamp()
         };
@@ -96,7 +103,7 @@ export default function ChatWindow({ conversation, currentUser, onBack }: ChatWi
         // Update conversation metadata
         await updateDoc(doc(db, "conversations", conversation.id), {
             lastMessageAt: serverTimestamp(),
-            lastMessagePreview: text.slice(0, 100),
+            lastMessagePreview: sanitizedText.slice(0, 100),
             lastMessageSenderId: currentUser.uid
         });
     };

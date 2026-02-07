@@ -2,7 +2,10 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
     
-    // Helper functions
+    // ============================================
+    // HELPER FUNCTIONS
+    // ============================================
+    
     function isSignedIn() {
       return request.auth != null;
     }
@@ -14,65 +17,132 @@ service cloud.firestore {
     function hasRole(role) {
       return isSignedIn() && getUserRole() == role;
     }
+    
+    function hasAnyRole(roles) {
+      return isSignedIn() && getUserRole() in roles;
+    }
+    
+    // Data validation helpers
+    function isValidString(field, maxLen) {
+      return field is string && field.size() > 0 && field.size() <= maxLen;
+    }
+    
+    function isValidEmail(email) {
+      return email is string && email.matches('^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$');
+    }
+    
+    function isValidPhoneNumber(phone) {
+      return phone is string && phone.matches('^[0-9+\\-\\s()]{8,20}$');
+    }
 
-    // User Profiles
+    // ============================================
+    // USER PROFILES
+    // ============================================
     match /users/{userId} {
       allow read: if isSignedIn();
-      allow write: if request.auth.uid == userId || hasRole('admin');
-    }
-
-    // Courses
-    match /courses/{courseId} {
-      allow read: if true; // Publicly browsable
-      allow write: if hasRole('admin') || hasRole('moderator');
-    }
-
-    // Student Showcase
-    match /showcase/{showcaseId} {
-      allow read: if true;
-      allow write: if hasRole('admin') || hasRole('moderator');
-    }
-
-    // Course Modules
-    match /courseModules/{moduleId} {
-      allow read: if isSignedIn(); // Add course-specific logic if needed for paid restriction
-      allow write: if hasRole('admin') || hasRole('trainer');
-    }
-
-    // Enrollment Requests
-    match /enrollments/{enrollmentId} {
-      allow read: if isSignedIn() && (request.auth.uid == resource.data.uid || hasRole('admin') || hasRole('moderator'));
-      allow create: if isSignedIn();
-      allow update: if hasRole('admin') || hasRole('moderator');
+      allow create: if request.auth.uid == userId;
+      allow update: if request.auth.uid == userId || hasRole('admin');
       allow delete: if hasRole('admin');
     }
 
-    // Progress Tracking (userProgress collection)
-    match /userProgress/{progressId} {
-      allow read: if isSignedIn() && (request.auth.uid == resource.data.uid || hasRole('admin') || hasRole('trainer') || hasRole('moderator'));
-      allow write: if isSignedIn() && (request.auth.uid == resource.data.uid || hasRole('admin') || hasRole('trainer') || hasRole('moderator'));
+    // ============================================
+    // COURSES (Public browsing allowed)
+    // ============================================
+    match /courses/{courseId} {
+      allow read: if true;
+      allow write: if hasAnyRole(['admin', 'moderator']);
     }
 
-    // Announcements
+    // ============================================
+    // STUDENT SHOWCASE
+    // ============================================
+    match /showcase/{showcaseId} {
+      allow read: if true;
+      allow write: if hasAnyRole(['admin', 'moderator']);
+    }
+
+    // ============================================
+    // COURSE MODULES (Enrolled users only)
+    // ============================================
+    match /courseModules/{moduleId} {
+      allow read: if isSignedIn();
+      allow write: if hasAnyRole(['admin', 'trainer']);
+    }
+
+    // ============================================
+    // ENROLLMENT REQUESTS
+    // ============================================
+    match /enrollments/{enrollmentId} {
+      allow read: if isSignedIn() && 
+        (request.auth.uid == resource.data.uid || hasAnyRole(['admin', 'moderator']));
+      allow create: if isSignedIn() && 
+        request.auth.uid == request.resource.data.uid &&
+        isValidString(request.resource.data.studentName, 100) &&
+        isValidString(request.resource.data.transactionId, 50);
+      allow update: if hasAnyRole(['admin', 'moderator']);
+      allow delete: if hasRole('admin');
+    }
+
+    // ============================================
+    // PROGRESS TRACKING
+    // ============================================
+    match /userProgress/{progressId} {
+      allow read: if isSignedIn() && 
+        (request.auth.uid == resource.data.uid || hasAnyRole(['admin', 'trainer', 'moderator']));
+      allow write: if isSignedIn() && 
+        (request.auth.uid == request.resource.data.uid || hasAnyRole(['admin', 'trainer', 'moderator']));
+    }
+
+    // ============================================
+    // ANNOUNCEMENTS
+    // ============================================
     match /announcements/{announcementId} {
       allow read: if true;
-      allow write: if hasRole('admin') || hasRole('trainer') || hasRole('moderator');
+      allow write: if hasAnyRole(['admin', 'trainer', 'moderator']);
     }
 
-    // Attendance
+    // ============================================
+    // ATTENDANCE
+    // ============================================
     match /attendance/{attendanceId} {
-      allow read: if isSignedIn() && (request.auth.uid == resource.data.uid || hasRole('admin') || hasRole('trainer') || hasRole('moderator'));
-      allow create: if hasRole('admin') || hasRole('trainer') || hasRole('moderator');
-      allow update, delete: if hasRole('admin') || hasRole('moderator');
+      allow read: if isSignedIn() && 
+        (request.auth.uid == resource.data.uid || hasAnyRole(['admin', 'trainer', 'moderator']));
+      allow create: if hasAnyRole(['admin', 'trainer', 'moderator']);
+      allow update, delete: if hasAnyRole(['admin', 'moderator']);
     }
 
-    // Notifications
+    // ============================================
+    // NOTIFICATIONS
+    // ============================================
     match /notifications/{notificationId} {
       allow read: if isSignedIn() && request.auth.uid == resource.data.uid;
-      allow create: if hasRole('admin') || hasRole('trainer') || hasRole('moderator');
+      allow create: if hasAnyRole(['admin', 'trainer', 'moderator']);
       allow update: if isSignedIn() && request.auth.uid == resource.data.uid;
       allow delete: if hasRole('admin');
     }
+
+    // ============================================
+    // CONVERSATIONS (Messaging System)
+    // ============================================
+    match /conversations/{conversationId} {
+      allow read: if isSignedIn() && 
+        (request.auth.uid == resource.data.userId || hasAnyRole(['admin', 'trainer', 'moderator']));
+      allow create: if isSignedIn() && 
+        request.auth.uid == request.resource.data.userId &&
+        isValidString(request.resource.data.userName, 100);
+      allow update: if isSignedIn() && 
+        (request.auth.uid == resource.data.userId || hasAnyRole(['admin', 'trainer', 'moderator']));
+      allow delete: if hasRole('admin');
+      
+      // Messages subcollection
+      match /messages/{messageId} {
+        allow read: if isSignedIn() && 
+          (get(/databases/$(database)/documents/conversations/$(conversationId)).data.userId == request.auth.uid ||
+           hasAnyRole(['admin', 'trainer', 'moderator']));
+        allow create: if isSignedIn() && 
+          isValidString(request.resource.data.content, 5000);
+        allow update, delete: if hasRole('admin');
+      }
+    }
   }
 }
-

@@ -193,17 +193,26 @@ export default function Navbar() {
             <AnimatePresence>
                 {isOpen && (
                     <motion.div
-                        initial={{ opacity: 0, x: -20 }}
+                        initial={{ opacity: 0, x: "-100%" }}
                         animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, x: -20 }}
-                        className="fixed inset-0 top-[88px] bg-background z-40 flex flex-col items-center justify-center gap-8 md:hidden p-6"
+                        exit={{ opacity: 0, x: "-100%" }}
+                        transition={{ type: "spring", damping: 25, stiffness: 300 }}
+                        className="fixed inset-0 bg-background z-[60] flex flex-col items-center justify-center gap-6 sm:gap-8 md:hidden p-4 sm:p-6"
                     >
+                        {/* Close button */}
+                        <button
+                            onClick={() => setIsOpen(false)}
+                            className="absolute top-6 right-6 p-3 rounded-xl bg-foreground/5 text-foreground hover:bg-primary hover:text-white transition-all border border-border"
+                        >
+                            <X size={24} />
+                        </button>
+
                         {navLinks.map((link) => (
                             <Link
                                 key={link.name}
                                 href={link.href}
                                 onClick={() => setIsOpen(false)}
-                                className="font-robot text-3xl uppercase tracking-widest text-foreground hover:text-primary transition-all"
+                                className="font-robot text-2xl sm:text-3xl uppercase tracking-widest text-foreground hover:text-primary transition-all"
                             >
                                 {link.name}
                             </Link>
