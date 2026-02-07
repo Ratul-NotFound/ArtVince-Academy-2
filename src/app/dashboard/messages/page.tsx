@@ -84,14 +84,11 @@ export default function UserMessagesPage() {
             return;
         }
 
-        // Create new conversation
-        const conversationData: Omit<Conversation, "id"> = {
+        // Create new conversation - only include defined fields
+        const conversationData: Record<string, any> = {
             type,
-            courseId: courseId || undefined,
-            courseName: courseName || undefined,
             userId: user.uid,
             userName: profile.displayName || profile.email || "User",
-            userPhoto: profile.photoURL || undefined,
             participantIds: [user.uid],
             lastMessageAt: serverTimestamp(),
             lastMessagePreview: "",
@@ -99,11 +96,17 @@ export default function UserMessagesPage() {
             createdAt: serverTimestamp()
         };
 
+        // Only add optional fields if they have values
+        if (courseId) conversationData.courseId = courseId;
+        if (courseName) conversationData.courseName = courseName;
+        if (profile.photoURL) conversationData.userPhoto = profile.photoURL;
+
         const docRef = await addDoc(collection(db, "conversations"), conversationData);
         const newConv = { id: docRef.id, ...conversationData } as Conversation;
         setSelectedConversation(newConv);
         setShowNewConversation(false);
     };
+
 
     if (loading) {
         return (
